@@ -49,7 +49,7 @@ int	main()
 
 	ft::map<std::string, int>::iterator	yes = test.end();
 
-	--yes;
+	--yes; // -> voir dans operator++ et operator-- de tree_iterator pour essayer de trouver l'erreur : pourquoi (current != senti) dans operator--
 	// ++yes;
 	// --yes;
 	// ++yes;
