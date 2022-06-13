@@ -102,9 +102,19 @@ class map
 		// template<class InputIterator>
 		// void	insert(InputIterator first, InputIterator last)
 		// {
-
+			
 		// }
 
+		//Capacity=======================================================================================================
+
+		bool	empty() const
+		{
+			if (_size == 0)
+				return true;
+			return false;
+		}
+
+		size_type	size() const { return _size; }
 
 
 

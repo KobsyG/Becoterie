@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../vector/iterator_traits.hpp" // include iterator_traits
+#include "iterator_traits.hpp" // include iterator_traits
 
 namespace ft {
 

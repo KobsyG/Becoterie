@@ -4,12 +4,13 @@
 // #ifdef STD
 	// #include <map>
 	// #include <utility>
-	// namespace ft = std;
 // #else
 // #endif
 
+	// namespace ft = std;
+
 #include "map.hpp"
-#include "utils.hpp"
+// #include "utils.hpp"
 
 int	main()
 {
@@ -43,15 +44,20 @@ int	main()
 	test.insert(q);
 	test.insert(r);
 
+
 	// ft::montree(test.tree.root);
 
 	ft::map<std::string, int>::iterator	yes = test.end();
-	// ++yes;
-	// --yes;
-	// --yes;
-	// ++yes;
 
-	// std::cout << yes->first << std::endl;
+	--yes;
+	// ++yes;
+	// --yes;
+	// ++yes;
+	// --yes;
+
+	// std::cout << "ok = " << yes->first << std::endl;
+
+	// std::cout << yes.current.senti->left->data.first << std::endl;
 
 	
 

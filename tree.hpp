@@ -9,36 +9,52 @@
 namespace ft {
 
 template <class value_type>
-struct node
+struct node;
+
+template <class value_type>
+struct node_senti
 {
-	struct node *left;
-	struct node *right;
-	struct node *parent;
-	int			color;
+	public:
+	
+		struct node<value_type> *left;
+		struct node<value_type> *right;
+		struct node<value_type>	*parent;
+		// node_senti				*senti;
+		int						color;
+
+	public:
+
+		node_senti() : left(NULL), right(NULL), parent(NULL), color(1) {}
+
+};
+
+template <class value_type>
+struct node	: public node_senti<value_type>
+{
 	value_type	data;
 
-	node() : left(NULL), right(NULL), parent(NULL), color(1) {}
+	node() : node_senti<value_type>() {}
 
-	node(const value_type & data) : left(NULL), right(NULL), parent(NULL), color(1), data(data) {}
+	node(const value_type & data) : node_senti<value_type>(), data(data) {}
 
 	node(const node& other) { *this = other; }
 
-	node&	operator=(const node& other) { left = other.left; right = other.right; parent = other.parent; color = other.color; data = other.data; return *this;}
+	node&	operator=(const node& other) { this->left = other.left; this->right = other.right; this->parent = other.parent; this->color = other.color; data = other.data; return *this;}
 
 	node *next()
 	{
 		node	*tmp = this;
-		if (tmp->right != NULL) {
+		if (tmp->right != NULL)
+		{
 			tmp = tmp->right;
-			while (tmp->left != NULL) {
+			while (tmp->left != NULL)
 				tmp = tmp->left;
-			}
 			return tmp;
 		}
-		else {
-			while (tmp->parent != NULL && tmp == tmp->parent->right) {
+		else
+		{
+			while (tmp->parent != NULL && tmp == tmp->parent->right)
 				tmp = tmp->parent;
-			}
 			return tmp->parent;
 		}
 	}
@@ -46,17 +62,17 @@ struct node
 	node *previous()
 	{
 		node	*tmp = this;
-		if (tmp->left != NULL) {
+		if (tmp->left != NULL)
+		{
 			tmp = tmp->left;
-			while (tmp->right != NULL) {
+			while (tmp->right != NULL)
 				tmp = tmp->right;
-			}
 			return tmp;
 		}
-		else {
-			while (tmp->parent != NULL && tmp == tmp->parent->left) {
+		else
+		{
+			while (tmp->parent != NULL && tmp == tmp->parent->left)
 				tmp = tmp->parent;
-			}
 			return tmp->parent;
 		}
 	}
@@ -75,22 +91,26 @@ class RBtree
 {
 	public:
 
-		typedef tree_iterator< node<value_type>* >					iterator;
+		typedef tree_iterator< node<value_type>*, node_senti<value_type>* >					iterator;
 	
 	private:
 		Compare				_compare;
 		Alloc				_alloc;
 	
 	public:
-		ft::node<value_type>	*root;
+	
+		ft::node<value_type>		*root;
+		ft::node_senti<value_type>	*senti;
 
-		RBtree() : root(NULL) {}
+		RBtree() : root(NULL) { senti = new node_senti<value_type>();}
 
 		void	insert(const value_type& value) // changer return ici 
 		{
 			ft::node<value_type>	*tmp = root;
 			ft::node<value_type>	*y = NULL;
 
+			if (root)
+				root->parent = NULL;
 			while (tmp != NULL)
 			{
 				y = tmp;
@@ -111,9 +131,9 @@ class RBtree
 			else
 				y->right = tmp;
 			fix_insert(tmp);
+			senti->left = root;
+			root->parent = static_cast<node<value_type>* >(senti);
 		}
-
-		
 
 		void	fix_insert(node<value_type>* node)
 		{
@@ -257,10 +277,7 @@ class RBtree
 		iterator	end()
 		{
 			iterator it(last());
-			std::cout << "test " << std::endl;
 			++it;
-			std::cout << "test " << std::endl;
-			
 			return (it);
 		}
 
