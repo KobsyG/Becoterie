@@ -91,8 +91,6 @@ class	tree_iterator
 		{
 			if (current == last()) // permet de mettre current sur senti lorsque ++ sur last cad pour end();
 				current = static_cast<pointer>(senti);
-			else
-				current = current->next();
 			return *this;
 		}
 

@@ -95,10 +95,10 @@ class map
 			tree.insert(value);
 		}
 
-		// iterator	insert(iterator position, const value_type& val) // sans doute la meme merde qu'au dessus
-		// {
-
-		// }
+		void insert (iterator position, const value_type& val) {
+			tree.insert(position.current, val);
+		 //gang ... return un iterator à l'endroit ou il a ete inseré ou l'endroit ou il existe déjà
+		}
 
 		// template<class InputIterator>
 		// void	insert(InputIterator first, InputIterator last)

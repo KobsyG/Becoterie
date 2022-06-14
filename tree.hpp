@@ -142,6 +142,49 @@ class RBtree
 			root->parent = static_cast<node<value_type>* >(senti);
 		}
 
+		void insert(iterator position, const value_type& val) {
+			ft::node<value_type>	*node = position.current;
+			ft::node<value_type>	*tmp = node;
+
+			// Check si il est a un endroit valide, sinon on appelle le insert normal à la place
+			if (tmp->parent && tmp->parent->right) {
+				if (tmp->parent->right == tmp && _compare(val, tmp->data)) { // Si il est a droite mais qu'il est plus petit
+					insert(val);
+					return;
+				}
+			}
+			if (tmp->parent && tmp->parent->left) {
+				if (tmp->parent->left == tmp && _compare(tmp->data, val)) { // Si il est a gauche mais qu'il est plus grand
+					insert(val);
+					return;
+				}
+			}
+
+			ft::node<value_type>	*y = NULL;
+			while (tmp != NULL)
+			{
+				y = tmp;
+				if (_compare(val, tmp->data))
+					tmp = tmp->left;
+				else
+					tmp = tmp->right;
+			}
+			tmp = make_node(val);
+			tmp->parent = y;
+			if (y == NULL)
+			{
+				root = tmp;
+				root->color = 0;
+			}
+			else if (_compare(val, y->data))
+				y->left = tmp;
+			else
+				y->right = tmp;
+			fix_insert(tmp);
+			senti->left = root;
+			root->parent = static_cast<ft::node<value_type>* >(senti);
+		}
+
 		void	fix_insert(node<value_type>* node)
 		{
 			ft::node<value_type>	*tmp = node;

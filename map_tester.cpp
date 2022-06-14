@@ -30,6 +30,7 @@ int	main()
 	ft::pair<std::string, int> o("o", 4);
 	ft::pair<std::string, int> q("q", 4);
 	ft::pair<std::string, int> r("r", 4);
+	ft::pair<std::string, int> s("s", 4);
 	
 	test.insert(m);
 	test.insert(f);
@@ -57,5 +58,5 @@ int	main()
 	std::cout << test1->first << std::endl;
 	std::cout << (--test2)->first << std::endl;
 
-	
+	//std::cout << yes->first << std::endl;
 }
