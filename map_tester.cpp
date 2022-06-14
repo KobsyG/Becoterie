@@ -30,6 +30,7 @@ int	main()
 	ft::pair<std::string, int> o("o", 4);
 	ft::pair<std::string, int> q("q", 4);
 	ft::pair<std::string, int> r("r", 4);
+	ft::pair<std::string, int> s("s", 4);
 	
 	test.insert(m);
 	test.insert(f);
@@ -45,18 +46,17 @@ int	main()
 	test.insert(r);
 
 
-	// ft::montree(test.tree.root);
+	ft::montree(test.tree.root);
 
 	ft::map<std::string, int>::iterator	yes = test.end();
 
 	--yes;
-	++yes;
 	--yes;
-	// ++yes;
-	// --yes;
+	--yes;
 
-	std::cout << "ok = " << yes->first << std::endl;
+	test.insert(yes, s);
 
+	ft::montree(test.tree.root);
 
-	
+	//std::cout << yes->first << std::endl;
 }
