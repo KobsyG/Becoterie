@@ -10,7 +10,7 @@
 	// namespace ft = std;
 
 #include "map.hpp"
-// #include "utils.hpp"
+#include "utils.hpp"
 
 int	main()
 {
@@ -49,17 +49,14 @@ int	main()
 
 	ft::map<std::string, int>::iterator	yes = test.end();
 
-	--yes; // -> voir dans operator++ et operator-- de tree_iterator pour essayer de trouver l'erreur : pourquoi (current != senti) dans operator--
+	--yes;
+	++yes;
+	--yes;
 	// ++yes;
 	// --yes;
-	// ++yes;
-	// --yes;
 
-	// std::cout << "ok = " << yes->first << std::endl;
+	std::cout << "ok = " << yes->first << std::endl;
 
-	// std::cout << yes.current.senti->left->data.first << std::endl;
-
-	
 
 	
 }

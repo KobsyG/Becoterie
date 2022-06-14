@@ -19,7 +19,6 @@ struct node_senti
 		struct node<value_type> *left;
 		struct node<value_type> *right;
 		struct node<value_type>	*parent;
-		// node_senti				*senti;
 		int						color;
 
 	public:

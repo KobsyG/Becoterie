@@ -32,7 +32,7 @@ class	tree_iterator
 		}
 
 		template <typename Iterator>
-		tree_iterator(const tree_iterator<Iterator, node_senti>& other) { current = other.current; senti = other.senti; }
+		tree_iterator(const tree_iterator<Iterator, node_senti> other) { current = other.current; senti = other.senti; }
 
 		pointer base() const { return current; }
 
@@ -41,6 +41,7 @@ class	tree_iterator
 		tree_iterator&	operator=(const tree_iterator& other)
 		{
 			current = other.current;
+			senti = other.senti;
 			return (*this);
 		}
 
@@ -89,48 +90,34 @@ class	tree_iterator
 		tree_iterator&	operator++()
 		{
 			if (current == last()) // permet de mettre current sur senti lorsque ++ sur last cad pour end();
-			{
-				std::cout << "current == last" << std::endl;
 				current = static_cast<pointer>(senti);
-			}
-			if (current == senti)
-			{
-				std::cout << "current == senti ici" << std::endl; // on voit que current == senti
-				std::cout << "------" << std::endl;
-			}
 			return *this;
 		}
 
-		// tree_iterator	operator++(int)
-		// {
-		// 	tree_iterator	tmp = *this;
-		// 	++*this;
-		// 	return (tmp);
-		// }
+		tree_iterator	operator++(int)
+		{
+			tree_iterator	tmp = *this;
+			++*this;
+			return (tmp);
+		}
 
 		// // Operateur de decrementation=====================================================================
 
 		tree_iterator&	operator--()
 		{
-			if (current == senti) // pourquoi current != senti quand on fait -- depuis end ? 
-			{
-				std::cout << "current == senti" << std::endl;
+			if (current == senti)
 				current = last();
-			}
 			else
-			{
-				std::cout << "current != senti" << std::endl;
 				current = current->previous();
-			}
 			return *this;
 		}
 		
-		// tree_iterator	operator--(int)
-		// {
-		// 	tree_iterator	tmp = *this;
-		// 	--*this;
-		// 	return tmp;
-		// }
+		tree_iterator	operator--(int)
+		{
+			tree_iterator	tmp = *this;
+			--*this;
+			return tmp;
+		}
 
 		pointer	last()
 		{
