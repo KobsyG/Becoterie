@@ -48,15 +48,15 @@ int	main()
 
 	ft::montree(test.tree.root);
 
-	ft::map<std::string, int>::iterator	yes = test.end();
 
-	--yes;
-	--yes;
-	--yes;
+	ft::map<std::string, int>::iterator test1;
+	ft::map<std::string, int>::iterator test2;
 
-	test.insert(yes, s);
+	test1 = test.find("r");
+	test2 = test.find("b");
 
-	ft::montree(test.tree.root);
+	std::cout << test1->first << std::endl;
+	std::cout << (--test2)->first << std::endl;
 
 	//std::cout << yes->first << std::endl;
 }

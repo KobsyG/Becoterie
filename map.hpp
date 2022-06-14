@@ -38,14 +38,15 @@ class map
 
 		typedef std::size_t																						size_type;
 		typedef std::ptrdiff_t																					difference_type;
-		typedef Compa<Compare>																					key_compare;
+		typedef	Compare																							key_compare;
+		typedef Compa<Compare>																					value_compare;
 		typedef Alloc																							allocator_type;
 		typedef value_type&																						reference;
 		typedef const value_type&																				const_reference;
 		typedef typename Alloc::pointer																			pointer;
 		typedef typename Alloc::const_pointer																	const_pointer;
-		typedef map_iterator<pointer, typename RBtree<value_type, key_compare, allocator_type>::iterator >		iterator;		
-		typedef map_iterator<const_pointer, typename RBtree<value_type, key_compare, allocator_type>::iterator>	const_iterator;
+		typedef map_iterator<pointer, typename RBtree<value_type, key_compare, value_compare, allocator_type>::iterator >		iterator;		
+		typedef map_iterator<const_pointer, typename RBtree<value_type, key_compare, value_compare, allocator_type>::iterator>	const_iterator;
 
 
 		// typedef ft::reverse_iterator<iterator>			reverse_iterator;
@@ -55,10 +56,10 @@ class map
 
 		// pointer			c; // gang ... noeud
 
-		RBtree<value_type, key_compare, allocator_type>	tree;
-		allocator_type									_alloc;
-		size_type										_size;
-		key_compare										_compare;
+		RBtree<value_type, key_compare, value_compare ,allocator_type>	tree;
+		allocator_type													_alloc;
+		size_type														_size;
+		key_compare														_compare;
 
 	public:
 
@@ -120,7 +121,17 @@ class map
 
 
 
+		//Operations=======================================================================================================
 
+		iterator find(const key_type& k)
+		{
+			return iterator(tree.find(k));
+		}
+
+		const_iterator find(const key_type& k) const
+		{
+			return const_iterator(tree.find(k));
+		}
 
 
 
