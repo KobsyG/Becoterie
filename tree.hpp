@@ -85,15 +85,23 @@ node<value_type>*	make_node(const value_type& data)
 	return new_node;
 }
 
-template <class value_type, class Compare, class Alloc>
+template <class value_type, class key_compare, class value_compare, class Alloc>
 class RBtree
 {
 	public:
 
+
+		typedef	typename value_type::first_type												key_type;
+
 		typedef tree_iterator< node<value_type>*, node_senti<value_type>* >					iterator;
+		typedef tree_iterator< const node<value_type>*, node_senti<value_type>* >			const_iterator;
+
+		
+
 	
 	private:
-		Compare				_compare;
+		key_compare			_key_comp;
+		value_compare		_val_comp;
 		Alloc				_alloc;
 	
 	public:
@@ -113,7 +121,7 @@ class RBtree
 			while (tmp != NULL)
 			{
 				y = tmp;
-				if (_compare(value, tmp->data))
+				if (_val_comp(value, tmp->data))
 					tmp = tmp->left;
 				else
 					tmp = tmp->right;
@@ -125,7 +133,7 @@ class RBtree
 				root = tmp;
 				root->color = 0;
 			}
-			else if (_compare(value, y->data))
+			else if (_val_comp(value, y->data))
 				y->left = tmp;
 			else
 				y->right = tmp;
@@ -280,6 +288,35 @@ class RBtree
 			return (it);
 		}
 
+		iterator	find(const key_type& k)
+		{
+			node<value_type>	*tmp = root;
+			while (tmp != NULL && tmp->data.first != k)
+			{
+				if (_key_comp(k, tmp->data.first))
+					tmp = tmp->left;
+				else
+					tmp = tmp->right;
+			}
+			if (tmp == NULL)
+				return end();
+			return iterator(tmp);
+		}
+
+		const_iterator	find(const key_type& k) const
+		{
+			node<value_type>	*tmp = root;
+			while (tmp != NULL && tmp->data.first != k)
+			{
+				if (_key_comp(k, tmp->data.first))
+					tmp = tmp->left;
+				else
+					tmp = tmp->right;
+			}
+			if (tmp == NULL)
+				return end();
+			return const_iterator(tmp);
+		}
 };
 
 }

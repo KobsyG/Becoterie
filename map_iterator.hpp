@@ -19,7 +19,7 @@ class	map_iterator
 
 		// Constructeur=======================================================================================
 
-		map_iterator() { current = NULL; }
+		map_iterator() : current() {}
 
 		map_iterator(Tree_iterator gang) { current = gang; }
 

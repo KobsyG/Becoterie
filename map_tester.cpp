@@ -45,18 +45,17 @@ int	main()
 	test.insert(r);
 
 
-	// ft::montree(test.tree.root);
+	ft::montree(test.tree.root);
 
-	ft::map<std::string, int>::iterator	yes = test.end();
 
-	--yes;
-	++yes;
-	--yes;
-	// ++yes;
-	// --yes;
+	ft::map<std::string, int>::iterator test1;
+	ft::map<std::string, int>::iterator test2;
 
-	std::cout << "ok = " << yes->first << std::endl;
+	test1 = test.find("r");
+	test2 = test.find("b");
 
+	std::cout << test1->first << std::endl;
+	std::cout << (--test2)->first << std::endl;
 
 	
 }
