@@ -26,8 +26,8 @@ class	tree_iterator
 		tree_iterator(pointer gang)
 		{
 			senti = gang;
-			// while (senti->parent)
-			// 	senti = senti->parent;
+			while (senti->parent)
+			 	senti = senti->parent;
 			current = gang;
 		}
 
@@ -89,7 +89,8 @@ class	tree_iterator
 
 		tree_iterator&	operator++()
 		{
-			if (current == last()) // permet de mettre current sur senti lorsque ++ sur last cad pour end();
+			current = current->next();
+			if (current == NULL)
 				current = static_cast<pointer>(senti);
 			return *this;
 		}
