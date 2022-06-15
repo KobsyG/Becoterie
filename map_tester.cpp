@@ -56,7 +56,7 @@ int	main()
 	test2 = test.find("b");
 
 	std::cout << test1->first << std::endl;
-	std::cout << (--test2)->first << std::endl;
+	std::cout << (test2 == test.end()) << std::endl;
 
 	//std::cout << yes->first << std::endl;
 }

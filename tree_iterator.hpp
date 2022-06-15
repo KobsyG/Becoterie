@@ -26,8 +26,8 @@ class	tree_iterator
 		tree_iterator(pointer gang)
 		{
 			senti = gang;
-			while (senti->parent)
-				senti = senti->parent;
+			// while (senti->parent)
+			// 	senti = senti->parent;
 			current = gang;
 		}
 
@@ -122,7 +122,7 @@ class	tree_iterator
 		pointer	last()
 		{
 			pointer tmp = senti->left;
-			while (tmp->right)
+			while (tmp && tmp->right)
 				tmp = tmp->right;
 			return tmp;			
 		}
