@@ -159,6 +159,11 @@ namespace ft {
 				return 1;
 			}
 
+			iterator lower_bound (const key_type& k)
+			{
+				
+			}
+
 			//Allocator=======================================================================================================
 
 			allocator_type get_allocator() const { return _alloc; }
