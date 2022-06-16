@@ -23,8 +23,15 @@ class	tree_iterator
 
 		tree_iterator() : current(NULL), senti(NULL) {}
 
+		tree_iterator(node_senti gang ) : current(static_cast<pointer>(gang)), senti(gang) {}
+
 		tree_iterator(pointer gang)
 		{
+			if (gang == NULL)
+			{
+				tree_iterator();
+				return;
+			}
 			senti = gang;
 			while (senti->parent)
 			 	senti = senti->parent;
@@ -89,9 +96,10 @@ class	tree_iterator
 
 		tree_iterator&	operator++()
 		{
-			current = current->next();
 			if (current == NULL)
 				current = static_cast<pointer>(senti);
+			else
+				current = current->next();
 			return *this;
 		}
 

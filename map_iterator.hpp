@@ -21,10 +21,13 @@ class	map_iterator
 
 		map_iterator() : current() {}
 
-		map_iterator(Tree_iterator gang) { current = gang; }
+		map_iterator(Tree_iterator gang)
+		{
+			current = gang;
+		}
 
 		template <typename Iterator>
-		map_iterator(const map_iterator<Value, Iterator>& other) { current = other.current; }
+		map_iterator(const map_iterator<Value, Iterator>& other) {  current = other.current; }
 
 		pointer base() const { return current; }
 

@@ -291,9 +291,12 @@ namespace ft {
 
 			iterator	end()
 			{
-				iterator it(last());
-				++it;
-				return (it);
+				
+				return iterator(senti);
+				
+				// iterator it(last());
+				// ++it;
+				// return (it)
 			}
 
 			iterator	find(const key_type& k)

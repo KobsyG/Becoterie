@@ -32,6 +32,9 @@ int	main()
 	ft::pair<std::string, int> r("r", 4);
 	ft::pair<std::string, int> s("s", 4);
 	
+	test.end();
+	test.find("a");
+
 	test.insert(m);
 	test.insert(f);
 	test.insert(e);
@@ -57,6 +60,9 @@ int	main()
 
 	std::cout << test1->first << std::endl;
 	std::cout << (test2 == test.end()) << std::endl;
+
+	std::cout << (--test2)->first << std::endl;
+
 
 	ft::map<std::string, int>::iterator	yes = test.end();
 
