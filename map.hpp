@@ -56,7 +56,7 @@ namespace ft {
 
 			// pointer			c; // gang ... noeud
 
-			RBtree<value_type, key_compare, value_compare ,allocator_type>	tree;
+			RBtree<value_type, key_compare, value_compare ,allocator_type>	_tree;
 			allocator_type													_alloc;
 			size_type														_size;
 			key_compare														_compare;
@@ -80,13 +80,13 @@ namespace ft {
 
 			//Iterators=======================================================================================================
 
-			iterator		begin() { return iterator(tree.begin()); }
+			iterator		begin() { return iterator(_tree.begin()); }
 
-			const_iterator	begin() const { return const_iterator(tree.begin()); }
+			const_iterator	begin() const { return const_iterator(_tree.begin()); }
 
-			iterator	end() { return iterator(tree.end()); }
+			iterator	end() { return iterator(_tree.end()); }
 
-			iterator	end() const { return const_iterator(tree.end()); }
+			iterator	end() const { return const_iterator(_tree.end()); }
 
 		
 			//Modifiers=======================================================================================================
@@ -95,13 +95,13 @@ namespace ft {
 			{
 				ft::pair<iterator, bool>	ret;
 
-				/* if (find(value.first) != end()) { // gang trouver pourquoi find crash quand le tree est vide
-					ret.first = iterator(tree.find(value.first));
+				if (find(value.first) != end()) {
+					ret.first = iterator(_tree.find(value.first));
 					ret.second = false;
 					return ret;
-				} */
+				}
 				_size++;
-				ret.first = iterator(tree.insert(value));
+				ret.first = iterator(_tree.insert(value));
 				ret.second = true;
 				return ret;
 			}
@@ -110,23 +110,16 @@ namespace ft {
 			{
 				ft::pair<iterator, bool>	ret;
 
-				/* if (find(value.first) != end()) {
-					ret.first = iterator(tree.find(value.first));
+				if (find(value.first) != end()) {
+					ret.first = iterator(_tree.find(value.first));
 					ret.second = false;
 					return ret;
-				} */
+				}
 				_size++;
-				ret.first = iterator(tree.insert(position.current, value));
+				ret.first = iterator(_tree.insert(position.current, value));
 				ret.second = true;
 				return ret;
 			}
-
-			// template<class InputIterator>
-			// void	insert(InputIterator first, InputIterator last)
-			// {
-				
-			// }
-
 			
 
 			//Capacity=======================================================================================================
@@ -137,31 +130,51 @@ namespace ft {
 
 			//Observers=======================================================================================================
 
-			key_compare	key_comp() const { return _compare; }
+			key_compare		key_comp() const { return _compare; }
 			value_compare	value_comp() const { return value_compare(_compare); }
 
 			//Operations=======================================================================================================
 
 			iterator find(const key_type& k)
 			{
-				return iterator(tree.find(k));
+				return iterator(_tree.find(k));
 			}
 
 			const_iterator find(const key_type& k) const
 			{
-				return const_iterator(tree.find(k));
+				return const_iterator(_tree.find(k));
 			}
 
 			size_type count (const key_type& k) const
 			{
-				if (tree.find(k) == tree.end())
+				if (_tree.find(k) == _tree.end())
 					return 0;
 				return 1;
 			}
 
 			iterator lower_bound (const key_type& k)
 			{
-				
+				return iterator(_tree.lower_bound(k));
+			}
+
+			const_iterator lower_bound (const key_type& k) const
+			{
+				return const_iterator(_tree.lower_bound(k));
+			}
+
+			iterator upper_bound (const key_type& k)
+			{
+				return iterator(_tree.upper_bound(k));
+			}
+
+			const_iterator upper_bound (const key_type& k) const
+			{
+				return const_iterator(_tree.upper_bound(k));
+			}
+
+			ft::pair<iterator, iterator> equal_range (const key_type& k)
+			{
+				return _tree.upper_bound(k);
 			}
 
 			//Allocator=======================================================================================================

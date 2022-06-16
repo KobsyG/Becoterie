@@ -49,7 +49,7 @@ int	main()
 	test.insert(r);
 
 
-	ft::montree(test.tree.root);
+	ft::montree(test._tree.root);
 
 
 	ft::map<std::string, int>::iterator test1;
