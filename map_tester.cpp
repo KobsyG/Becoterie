@@ -37,7 +37,7 @@ int	main()
 
 	
 
-	ft::montree(test._tree.root);
+	ft::printTree(test._tree.root, nullptr, false);
 
 
 	ft::map<std::string, int>::iterator test1;
