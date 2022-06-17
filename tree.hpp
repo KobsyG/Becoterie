@@ -148,11 +148,11 @@ namespace ft {
 
 				// Check si il est a un endroit valide, sinon on appelle le insert normal à la place
 				if (tmp->parent && tmp->parent->right)
-					if (tmp->parent->right == tmp && _val_comp(val, tmp->parent->data)) // Si il est a droite mais qu'il est plus petit
+					if (tmp->parent->right == tmp && _val_comp(val, tmp->data)) // Si il est a droite mais qu'il est plus petit
 						return insert(val);
 		
 				if (tmp->parent && tmp->parent->left)
-					if (tmp->parent->left == tmp && _val_comp(tmp->parent->data, val)) // Si il est a gauche mais qu'il est plus grand
+					if (tmp->parent->left == tmp && _val_comp(tmp->data, val)) // Si il est a gauche mais qu'il est plus grand
 						return insert(val);
 
 				ft::node<value_type>	*y = NULL;
@@ -335,9 +335,9 @@ namespace ft {
 				{
 					if (tmp->data.first == k)
 						return iterator(tmp);
-					else if (tmp->parent != NULL && !_val_comp(k, tmp->parent->data.first) && _val_comp(k, tmp->data.first))
+					else if (tmp->parent != NULL && !_key_comp(k, tmp->parent->data.first) && _key_comp(k, tmp->data.first))
 						return iterator(tmp);
-					if (_val_comp(k, tmp->data.first))
+					if (_key_comp(k, tmp->data.first))
 						tmp = tmp->left;
 					else
 						tmp = tmp->right;
@@ -352,9 +352,9 @@ namespace ft {
 				{
 					if (tmp->data.first == k)
 						return const_iterator(tmp);
-					else if (tmp->parent != NULL && !_val_comp(k, tmp->parent->data.first) && _val_comp(k, tmp->data.first))
+					else if (tmp->parent != NULL && !_key_comp(k, tmp->parent->data.first) && _key_comp(k, tmp->data.first))
 						return const_iterator(tmp);
-					if (_val_comp(k, tmp->data.first))
+					if (_key_comp(k, tmp->data.first))
 						tmp = tmp->left;
 					else
 						tmp = tmp->right;
@@ -367,16 +367,18 @@ namespace ft {
 				node<value_type>	*tmp = root;
 				while (tmp != NULL)
 				{
-					if (tmp->data.first == k)
-						return iterator(tmp->right);
-					else if (tmp->parent != NULL && !_val_comp(k, tmp->parent->data.first) && _val_comp(k, tmp->data.first))
+					if (tmp->data.first == k) {
+						return iterator(tmp->next());
+					}
+					else if (tmp->parent != senti && !_key_comp(k, tmp->parent->data.first) && _key_comp(k, tmp->data.first)){
 						return iterator(tmp);
-					if (_val_comp(k, tmp->data.first))
+					}
+					if (_key_comp(k, tmp->data.first))
 						tmp = tmp->left;
 					else
 						tmp = tmp->right;
 				}
-				return iterator(root);
+				return end();
 			}
 
 			const_iterator	upper_bound(const key_type& k) const
@@ -385,10 +387,10 @@ namespace ft {
 				while (tmp != NULL)
 				{
 					if (tmp->data.first == k)
-						return const_iterator(tmp->right);
-					else if (tmp->parent != NULL && !_val_comp(k, tmp->parent->data.first) && _val_comp(k, tmp->data.first))
+						return const_iterator(tmp->next());
+					else if (tmp->parent != NULL && !_key_comp(k, tmp->parent->data.first) && _key_comp(k, tmp->data.first))
 						return const_iterator(tmp);
-					if (_val_comp(k, tmp->data.first))
+					if (_key_comp(k, tmp->data.first))
 						tmp = tmp->left;
 					else
 						tmp = tmp->right;
