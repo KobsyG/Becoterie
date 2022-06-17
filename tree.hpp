@@ -335,8 +335,8 @@ namespace ft {
 				{
 					if (tmp->data.first == k)
 						return iterator(tmp);
-					else if (tmp->parent != NULL && !_key_comp(k, tmp->parent->data.first) && _key_comp(k, tmp->data.first))
-						return iterator(tmp);
+					else if (tmp->parent != senti && _key_comp(k, tmp->parent->data.first) && !_key_comp(k, tmp->data.first))
+						return iterator(tmp->next());
 					if (_key_comp(k, tmp->data.first))
 						tmp = tmp->left;
 					else
@@ -352,14 +352,14 @@ namespace ft {
 				{
 					if (tmp->data.first == k)
 						return const_iterator(tmp);
-					else if (tmp->parent != NULL && !_key_comp(k, tmp->parent->data.first) && _key_comp(k, tmp->data.first))
+					else if (tmp->parent != senti && _key_comp(k, tmp->parent->data.first) && !_key_comp(k, tmp->data.first))
 						return const_iterator(tmp);
 					if (_key_comp(k, tmp->data.first))
 						tmp = tmp->left;
 					else
 						tmp = tmp->right;
 				}
-				return const_iterator(root);
+				return const_iterator(tmp);
 			}
 
 			iterator	upper_bound(const key_type& k)
@@ -367,17 +367,20 @@ namespace ft {
 				node<value_type>	*tmp = root;
 				while (tmp != NULL)
 				{
-					if (tmp->data.first == k) {
+					//if (tmp->parent != senti)
+					//std::cout << k << " " << tmp->parent->data.first << " " << tmp->data.first << " " << !_key_comp(k, tmp->parent->data.first) << " " <<  _key_comp(k, tmp->data.first) << std::endl;
+					if (tmp->data.first == k)
 						return iterator(tmp->next());
-					}
-					else if (tmp->parent != senti && !_key_comp(k, tmp->parent->data.first) && _key_comp(k, tmp->data.first)){
-						return iterator(tmp);
+					else if (tmp->parent != senti && _key_comp(k, tmp->parent->data.first) && !_key_comp(k, tmp->data.first)){
+						//std::cout << k << " " << tmp->parent->data.first << " " << tmp->data.first << std::endl;
+						return iterator(tmp->next());
 					}
 					if (_key_comp(k, tmp->data.first))
 						tmp = tmp->left;
 					else
 						tmp = tmp->right;
 				}
+				std::cout << "alo" << std::endl;
 				return end();
 			}
 
@@ -388,8 +391,8 @@ namespace ft {
 				{
 					if (tmp->data.first == k)
 						return const_iterator(tmp->next());
-					else if (tmp->parent != NULL && !_key_comp(k, tmp->parent->data.first) && _key_comp(k, tmp->data.first))
-						return const_iterator(tmp);
+					else if (tmp->parent != NULL && _key_comp(k, tmp->parent->data.first) && !_key_comp(k, tmp->data.first))
+						return const_iterator(tmp->next());
 					if (_key_comp(k, tmp->data.first))
 						tmp = tmp->left;
 					else

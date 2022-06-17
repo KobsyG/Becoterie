@@ -35,7 +35,7 @@ int	main()
 	test.end();
 	test.find("a");
 
-	test.upper_bound("a");
+	
 
 	ft::montree(test._tree.root);
 
@@ -45,6 +45,9 @@ int	main()
 
 	test1 = test.find("r");
 	test2 = test.find("b");
+
+	test1 = test.lower_bound("u");
+	std::cout << "lower " << test1->first << std::endl;
 
 	std::cout << test1->first << std::endl;
 	std::cout << (test2 == test.end()) << std::endl;
