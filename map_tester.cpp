@@ -61,5 +61,7 @@ int	main()
 	--yes;
 	--yes;
 
+	ft::map<std::string, int>::const_iterator ctest = test.end();
+
 	std::cout << yes->first << std::endl;
 }

@@ -84,7 +84,7 @@ namespace ft {
 		return new_node;
 	}
 
-	template <class value_type, class key_compare, class value_compare, class Alloc>
+	template <class value_type, class key_compare, class value_compare, class Alloc = std::allocator<ft::node<value_type> > >
 	class RBtree
 	{
 		public:
@@ -109,6 +109,10 @@ namespace ft {
 			ft::node_senti<value_type>	*senti;
 
 			RBtree() : root(NULL) { senti = new node_senti<value_type>(); }
+
+
+
+			//insert==========================================================================================
 
 			iterator	insert(const value_type& value) // changer return ici 
 			{
@@ -232,9 +236,143 @@ namespace ft {
 				}
 			}
 
-			void	left_rotation(node<value_type>* x)
+			//erase==========================================================================================
+
+			void fix_erase(ft::node<value_type> *node) {
+				ft::node<value_type>	*s;
+				while (node != root && node->color == BLACK)
+				{
+					if (node == node->parent->left)
+					{
+						s = node->parent->right;
+						if (s->color == RED)
+						{
+							s->color = BLACK;
+							node->parent->color = RED;
+							left_rotation(node->parent);
+							s = node->parent->right;
+						}
+
+						if (s->left->color == BLACK && s->right->color == BLACK) {
+							s->color = RED;
+							node = node->parent;
+						} else {
+							if (s->right->color == BLACK) {
+								s->left->color = BLACK;
+								s->color = RED;
+								right_rotation(s);
+								s = node->parent->right;
+							}
+							s->color = node->parent->color;
+							node->parent->color = BLACK;
+							s->right->color = BLACK;
+							left_rotation(node->parent);
+							node = root;
+						}
+					} else {
+						s = node->parent->left;
+						if (s->color == RED)
+						{
+							s->color = BLACK;
+							node->parent->color = RED;
+							right_rotation(node->parent);
+							s = node->parent->left;
+						}
+
+						if (s->right->color == BLACK) {
+							s->color = RED;
+							node = node->parent;
+						} else {
+							if (s->left->color == BLACK) {
+								s->right->color = BLACK;
+								s->color = RED;
+								left_rotation(s);
+								s = node->parent->left;
+							}
+							s->color = node->parent->color;
+							node->parent->color = BLACK;
+							s->left->color = BLACK;
+							right_rotation(node->parent);
+							node = root;
+						}
+					}
+					node->color = BLACK;
+				}
+			}
+
+			void transplant(ft::node<value_type> *a, ft::node<value_type> *b) {
+				if (a->parent == senti)
+					root = b;
+				else if (a == a->parent->left)
+					a->parent->left = b;
+				else
+					a->parent->right = b;
+				b->parent = a->parent;
+			}
+
+			size_t erase(key_type key) {
+				ft::node<value_type>	*tmp = root;
+				ft::node<value_type>	*x = NULL;
+				ft::node<value_type>	*y = NULL;
+				ft::node<value_type>	*z = NULL;
+
+				iterator it = find(key);
+
+				if (it == end()) // Si on trouve pas l'element return 0 pcq 0 elements effacés du coup
+					return 0;
+
+				z = tmp->data;
+				y = z;
+				int y_original_color = y->color;
+				if (z->left == NULL) {
+					x = z->right;
+					transplant(z, z->right);
+				} else if (z->right == NULL) {
+					x = z->left;
+					transplant(z, z->left);
+				} else {
+					y = minimum(z->right);
+					y_original_color = y->color;
+					x = y->right;
+					if (y->parent == z)
+						x->parent = y;
+					else {
+						transplant(y, y->right);
+						y->right = z->right;
+						y->right->parent = y;
+					}
+
+					transplant(z, y);
+					y->left = z->left;
+					y->left->parent = y;
+					y->color = z->color;
+				}
+				//destroy z ? voir quand on aura alloc et tout
+				if (y_original_color == BLACK)
+					fix_erase(x); // TODO
+			}
+
+			//min/max from node==========================================================================================
+
+			ft::node<value_type> *minimum(ft::node<value_type> *node) {
+				while (node->left != NULL) {
+					node = node->left;
+				}
+				return node;
+			}
+
+			ft::node<value_type> *maximum(ft::node<value_type> *node) {
+				while (node->right != NULL) {
+					node = node->right;
+				}
+				return node;
+			}
+
+			//rotate===========================================================================================
+
+			void	left_rotation(ft::node<value_type>* x)
 			{
-				node<value_type>	*y = x->right;
+				ft::node<value_type>	*y = x->right;
 				x->right = y->left;
 				if (y->left != NULL)
 					y->left->parent = x;
@@ -249,9 +387,9 @@ namespace ft {
 				x->parent = y;
 			}
 
-			void	right_rotation(node<value_type>* x)
+			void	right_rotation(ft::node<value_type>* x)
 			{
-				node<value_type>	*y = x->left;
+				ft::node<value_type>	*y = x->left;
 
 				x->left = y->right;
 				if (y->right != NULL)
@@ -266,6 +404,8 @@ namespace ft {
 				y->right = x;
 				x->parent = y;
 			}
+
+			//first/last/iterators===========================================================================
 
 			node<value_type>	*first()
 			{
@@ -298,6 +438,8 @@ namespace ft {
 				// return (it)
 			}
 
+			//find/erase========================================================================================
+
 			iterator	find(const key_type& k)
 			{
 				node<value_type>	*tmp = root;
@@ -327,6 +469,8 @@ namespace ft {
 					return end();
 				return const_iterator(tmp);
 			}
+
+			//bounds/range===========================================================================================
 
 			iterator	lower_bound(const key_type& k) //fonctionne en theorie mais a tester plus en details
 			{

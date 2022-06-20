@@ -26,8 +26,8 @@ class	map_iterator
 			current = gang;
 		}
 
-		template <typename Iterator>
-		map_iterator(const map_iterator<Value, Iterator>& other) {  current = other.current; }
+		template <typename _Value, typename Iterator>
+		map_iterator(const map_iterator<_Value, Iterator>& other) {  current = other.current; }
 
 		pointer base() const { return current; }
 
