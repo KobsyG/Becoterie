@@ -56,7 +56,7 @@ namespace ft {
 
 			// pointer			c; // gang ... noeud
 
-			RBtree<value_type, key_compare, value_compare , allocator_type>	_tree;
+			RBtree<value_type, key_compare, value_compare>					_tree;
 			allocator_type													_alloc;
 			size_type														_size;
 			key_compare														_compare;

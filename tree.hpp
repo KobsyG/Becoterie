@@ -77,20 +77,15 @@ namespace ft {
 		}
 	};
 
-	template<class value_type>
-	node<value_type>*	make_node(const value_type& data)
-	{
-		node<value_type>	*new_node = new node<value_type>(data);
-		return new_node;
-	}
-
 	template <class value_type, class key_compare, class value_compare, class Alloc = std::allocator<ft::node<value_type> > >
 	class RBtree
 	{
 		public:
 
+			typedef Alloc																		allocator_type;
 
 			typedef	typename value_type::first_type												key_type;
+			typedef typename allocator_type::pointer											pointer;
 
 			typedef tree_iterator< node<value_type>*, node_senti<value_type>* >					iterator;
 			typedef tree_iterator< const node<value_type>*, node_senti<value_type>* >			const_iterator;
@@ -102,10 +97,17 @@ namespace ft {
 			key_compare			_key_comp;
 			value_compare		_val_comp;
 			Alloc				_alloc;
+
+			pointer		make_node(const value_type& data)
+			{
+				pointer	tmp = _alloc.allocate(1);
+				_alloc.construct(tmp, data);
+				return tmp;
+			}
 		
 		public:
 		
-			ft::node<value_type>		*root;
+			pointer 					root;
 			ft::node_senti<value_type>	*senti;
 
 			RBtree() : root(NULL) { senti = new node_senti<value_type>(); }
@@ -116,8 +118,8 @@ namespace ft {
 
 			iterator	insert(const value_type& value) // changer return ici 
 			{
-				ft::node<value_type>	*tmp = root;
-				ft::node<value_type>	*y = NULL;
+				pointer	tmp = root;
+				pointer y = NULL;
 
 				if (root)
 					root->parent = NULL;
@@ -147,8 +149,8 @@ namespace ft {
 			}
 
 			iterator insert(iterator position, const value_type& val) {
-				ft::node<value_type>	*node = position.current;
-				ft::node<value_type>	*tmp = node;
+				pointer node = position.current;
+				pointer tmp = node;
 
 				// Check si il est a un endroit valide, sinon on appelle le insert normal à la place
 				if (tmp->parent && tmp->parent->right)
@@ -159,7 +161,7 @@ namespace ft {
 					if (tmp->parent->left == tmp && _val_comp(tmp->data, val)) // Si il est a gauche mais qu'il est plus grand
 						return insert(val);
 
-				ft::node<value_type>	*y = NULL;
+				pointer y = NULL;
 				while (tmp != NULL)
 				{
 					y = tmp;
@@ -187,7 +189,7 @@ namespace ft {
 
 			void	fix_insert(node<value_type>* node)
 			{
-				ft::node<value_type>	*tmp = node;
+				pointer tmp = node;
 				while (tmp->parent && tmp->parent->color == RED)
 				{
 					if (tmp->parent == tmp->parent->parent->left)
@@ -238,8 +240,8 @@ namespace ft {
 
 			//erase==========================================================================================
 
-			void fix_erase(ft::node<value_type> *node) {
-				ft::node<value_type>	*s;
+			void fix_erase(pointer node) {
+				pointer s;
 				while (node != root && node->color == BLACK)
 				{
 					if (node == node->parent->left)
@@ -300,7 +302,7 @@ namespace ft {
 				}
 			}
 
-			void transplant(ft::node<value_type> *a, ft::node<value_type> *b) {
+			void transplant(pointer a, pointer b) {
 				if (a->parent == senti)
 					root = b;
 				else if (a == a->parent->left)
@@ -311,10 +313,10 @@ namespace ft {
 			}
 
 			size_t erase(key_type key) {
-				ft::node<value_type>	*tmp = root;
-				ft::node<value_type>	*x = NULL;
-				ft::node<value_type>	*y = NULL;
-				ft::node<value_type>	*z = NULL;
+				pointer tmp = root;
+				pointer x = NULL;
+				pointer y = NULL;
+				pointer z = NULL;
 
 				iterator it = find(key);
 
@@ -354,14 +356,14 @@ namespace ft {
 
 			//min/max from node==========================================================================================
 
-			ft::node<value_type> *minimum(ft::node<value_type> *node) {
+			pointer minimum(pointer node) {
 				while (node->left != NULL) {
 					node = node->left;
 				}
 				return node;
 			}
 
-			ft::node<value_type> *maximum(ft::node<value_type> *node) {
+			pointer maximum(pointer node) {
 				while (node->right != NULL) {
 					node = node->right;
 				}
@@ -370,9 +372,9 @@ namespace ft {
 
 			//rotate===========================================================================================
 
-			void	left_rotation(ft::node<value_type>* x)
+			void	left_rotation(pointer x)
 			{
-				ft::node<value_type>	*y = x->right;
+				pointer y = x->right;
 				x->right = y->left;
 				if (y->left != NULL)
 					y->left->parent = x;
@@ -387,9 +389,9 @@ namespace ft {
 				x->parent = y;
 			}
 
-			void	right_rotation(ft::node<value_type>* x)
+			void	right_rotation(pointer x)
 			{
-				ft::node<value_type>	*y = x->left;
+				pointer y = x->left;
 
 				x->left = y->right;
 				if (y->right != NULL)
