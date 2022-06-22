@@ -36,17 +36,17 @@ namespace ft {
 
 
 
-			typedef std::size_t																										size_type;
-			typedef std::ptrdiff_t																									difference_type;
-			typedef	Compare																											key_compare;
-			typedef Compa<Compare>																									value_compare;
-			typedef Alloc																											allocator_type;
-			typedef value_type&																										reference;
-			typedef const value_type&																								const_reference;
-			typedef typename Alloc::pointer																							pointer;
-			typedef typename Alloc::const_pointer																					const_pointer;
-			typedef map_iterator<pointer, typename RBtree<value_type, key_compare, value_compare, allocator_type>::iterator >		iterator;		
-			typedef map_iterator<const_pointer, typename RBtree<value_type, key_compare, value_compare, allocator_type>::iterator>	const_iterator;
+			typedef std::size_t																								size_type;
+			typedef std::ptrdiff_t																							difference_type;
+			typedef	Compare																									key_compare;
+			typedef Compa<Compare>																							value_compare;
+			typedef Alloc																									allocator_type;
+			typedef value_type&																								reference;
+			typedef const value_type&																						const_reference;
+			typedef typename Alloc::pointer																					pointer;
+			typedef typename Alloc::const_pointer																			const_pointer;
+			typedef map_iterator<pointer, typename RBtree<value_type, key_compare, value_compare>::iterator >				iterator;		
+			typedef map_iterator<const_pointer, typename RBtree<value_type, key_compare, value_compare>::const_iterator>	const_iterator;
 
 
 			// typedef ft::reverse_iterator<iterator>			reverse_iterator;
@@ -91,7 +91,7 @@ namespace ft {
 		
 			//Modifiers=======================================================================================================
 
-			ft::pair<iterator, bool>	insert(const value_type& value)
+			ft::pair<iterator, bool>	insert (const value_type& value)
 			{
 				ft::pair<iterator, bool>	ret;
 
@@ -119,6 +119,13 @@ namespace ft {
 				ret.first = iterator(_tree.insert(position.current, value));
 				ret.second = true;
 				return ret;
+			}
+
+			size_type erase (const key_type& k) {
+				if (find(k) == end())
+					return 0;
+				_size--;
+				return _tree.erase(k);
 			}
 			
 

@@ -82,13 +82,13 @@ namespace ft {
 	{
 		public:
 
-			typedef Alloc																		allocator_type;
+			typedef Alloc																allocator_type;
+			typedef	typename value_type::first_type										key_type;
+			typedef typename allocator_type::pointer									pointer;
+			typedef typename allocator_type::const_pointer								const_pointer;
 
-			typedef	typename value_type::first_type												key_type;
-			typedef typename allocator_type::pointer											pointer;
-
-			typedef tree_iterator< node<value_type>*, node_senti<value_type>* >					iterator;
-			typedef tree_iterator< const node<value_type>*, node_senti<value_type>* >			const_iterator;
+			typedef tree_iterator<pointer, node_senti<value_type>* >					iterator;
+			typedef tree_iterator<const_pointer, node_senti<value_type>* >				const_iterator;
 
 			
 
@@ -136,7 +136,7 @@ namespace ft {
 				if (y == NULL)
 				{
 					root = tmp;
-					root->color = 0;
+					root->color = BLACK;
 				}
 				else if (_val_comp(value, y->data))
 					y->left = tmp;
@@ -175,7 +175,7 @@ namespace ft {
 				if (y == NULL)
 				{
 					root = tmp;
-					root->color = 0;
+					root->color = BLACK;
 				}
 				else if (_val_comp(val, y->data))
 					y->left = tmp;
@@ -240,118 +240,82 @@ namespace ft {
 
 			//erase==========================================================================================
 
-			void fix_erase(pointer node) {
-				pointer s;
-				while (node != root && node->color == BLACK)
-				{
-					if (node == node->parent->left)
-					{
-						s = node->parent->right;
-						if (s->color == RED)
-						{
-							s->color = BLACK;
-							node->parent->color = RED;
-							left_rotation(node->parent);
-							s = node->parent->right;
-						}
-
-						if (s->left->color == BLACK && s->right->color == BLACK) {
-							s->color = RED;
-							node = node->parent;
-						} else {
-							if (s->right->color == BLACK) {
-								s->left->color = BLACK;
-								s->color = RED;
-								right_rotation(s);
-								s = node->parent->right;
-							}
-							s->color = node->parent->color;
-							node->parent->color = BLACK;
-							s->right->color = BLACK;
-							left_rotation(node->parent);
-							node = root;
-						}
-					} else {
-						s = node->parent->left;
-						if (s->color == RED)
-						{
-							s->color = BLACK;
-							node->parent->color = RED;
-							right_rotation(node->parent);
-							s = node->parent->left;
-						}
-
-						if (s->right->color == BLACK) {
-							s->color = RED;
-							node = node->parent;
-						} else {
-							if (s->left->color == BLACK) {
-								s->right->color = BLACK;
-								s->color = RED;
-								left_rotation(s);
-								s = node->parent->left;
-							}
-							s->color = node->parent->color;
-							node->parent->color = BLACK;
-							s->left->color = BLACK;
-							right_rotation(node->parent);
-							node = root;
-						}
-					}
-					node->color = BLACK;
-				}
+			void delete_fixup(pointer node) {
+				
 			}
 
 			void transplant(pointer a, pointer b) {
 				if (a->parent == senti)
 					root = b;
-				else if (a == a->parent->left)
+				else if (a == a->parent->left) {
+					std::cout << a->parent->left->data.first << " = " << b << std::endl;
 					a->parent->left = b;
-				else
+				}
+				else {
+					std::cout << a->parent->right->data.first << " = " << b << std::endl;
 					a->parent->right = b;
-				b->parent = a->parent;
+				}
+				if (b)
+					b->parent = a->parent;
 			}
 
-			size_t erase(key_type key) {
-				pointer tmp = root;
-				pointer x = NULL;
-				pointer y = NULL;
-				pointer z = NULL;
+			size_t erase(const key_type& key) {
+				pointer node = find_ptr(key);
+				
+				if (!node) return 0;
 
-				iterator it = find(key);
-
-				if (it == end()) // Si on trouve pas l'element return 0 pcq 0 elements effacés du coup
-					return 0;
-
-				z = tmp->data;
-				y = z;
-				int y_original_color = y->color;
-				if (z->left == NULL) {
-					x = z->right;
-					transplant(z, z->right);
-				} else if (z->right == NULL) {
-					x = z->left;
-					transplant(z, z->left);
-				} else {
-					y = minimum(z->right);
-					y_original_color = y->color;
-					x = y->right;
-					if (y->parent == z)
-						x->parent = y;
-					else {
-						transplant(y, y->right);
-						y->right = z->right;
-						y->right->parent = y;
+				if (!node->right && !node->left) { // Case 1: leaf
+					std::cout << key << ": case 1" << std::endl;
+					if (node->parent && node->parent->left && node->parent->left == node)
+						node->parent->left = NULL;
+					else if (node->parent && node->parent->right && node->parent->right == node)
+						node->parent->right = NULL;
+				} else if (node->right && !node->left) { // Case 2: node only has right child
+					std::cout << key << ": case 2" << std::endl;
+					node->right->parent = node->parent;
+					if (node->parent->right && node->parent->right == node)
+						node->parent->right = node->right;
+					else if (node->parent->left && node->parent->left == node)
+						node->parent->left = node->right;
+				} else if (!node->right && node->left) { // Case 3: node only has left child
+					std::cout << key << ": case 3" << std::endl;
+					node->left->parent = node->parent;
+					if (node->parent->right && node->parent->right == node)
+						node->parent->right = node->left;
+					else if (node->parent->left && node->parent->left == node)
+						node->parent->left = node->left;
+				} else { // Case 4: node has right and left childs
+					std::cout << key << ": case 4" << std::endl;
+					pointer successor = minimum(node->right);
+					std::cout << "successor: " << successor->data.first << std::endl;
+					if (successor != node->right) {
+						std::cout << successor->data.first << "->right = " << node->right->data.first << std::endl;
+						successor->right = node->right;
 					}
+					if (successor != node->left) {
 
-					transplant(z, y);
-					y->left = z->left;
-					y->left->parent = y;
-					y->color = z->color;
+						/* std::cout << successor->parent->left->data.first << "!=" << node->left->data.first << std::endl;
+						successor->parent->left = NULL;
+						std::cout << node->left << std::endl;
+						std::cout << successor->parent << std::endl; */
+
+						std::cout << successor->data.first << "->left = " << node->left->data.first << std::endl;
+						successor->left = node->left;
+					}
+					node->right->parent = successor;
+					std::cout << node->right->data.first << "->parent = " << successor->data.first << std::endl;
+					node->left->parent = successor;
+					std::cout << node->left->data.first << "->parent = " << successor->data.first << std::endl;
+					if (node == root) {
+						successor->parent = static_cast<ft::node<value_type>* >(senti);
+						root = successor;
+					}
+					std::cout << "root = " << root->data.first << std::endl;
 				}
-				//destroy z ? voir quand on aura alloc et tout
-				if (y_original_color == BLACK)
-					fix_erase(x); // TODO
+				std::cout << "ici c bon" << std::endl;
+				_alloc.destroy(node);
+				_alloc.deallocate(node, 1);
+				return 1;
 			}
 
 			//min/max from node==========================================================================================
@@ -442,9 +406,24 @@ namespace ft {
 
 			//find/erase========================================================================================
 
+			pointer	find_ptr(const key_type& k)
+			{
+				pointer tmp = root;
+				while (tmp != NULL && tmp->data.first != k)
+				{
+					if (_key_comp(k, tmp->data.first))
+						tmp = tmp->left;
+					else
+						tmp = tmp->right;
+				}
+				if (tmp == NULL)
+					return NULL;
+				return tmp;
+			}
+
 			iterator	find(const key_type& k)
 			{
-				node<value_type>	*tmp = root;
+				pointer tmp = root;
 				while (tmp != NULL && tmp->data.first != k)
 				{
 					if (_key_comp(k, tmp->data.first))
@@ -459,7 +438,7 @@ namespace ft {
 
 			const_iterator	find(const key_type& k) const
 			{
-				node<value_type>	*tmp = root;
+				pointer tmp = root;
 				while (tmp != NULL && tmp->data.first != k)
 				{
 					if (_key_comp(k, tmp->data.first))
