@@ -270,6 +270,8 @@ namespace ft {
 						node->parent->left = NULL;
 					else if (node->parent && node->parent->right && node->parent->right == node)
 						node->parent->right = NULL;
+					if (node == root)
+						root = NULL;
 				} else if (node->right && !node->left) { // Case 2: node only has right child
 					std::cout << key << ": case 2" << std::endl;
 					node->right->parent = node->parent;
@@ -280,6 +282,8 @@ namespace ft {
 					else if (node->parent->left && node->parent->left == node) {
 						node->parent->left = node->right;
 					}
+					if (node == root)
+						root = node->right;
 				} else if (!node->right && node->left) { // Case 3: node only has left child
 					std::cout << key << ": case 3" << std::endl;
 					node->left->parent = node->parent;
@@ -287,6 +291,8 @@ namespace ft {
 						node->parent->right = node->left;
 					else if (node->parent->left && node->parent->left == node)
 						node->parent->left = node->left;
+					if (node == root)
+						root = node->left;
 				} else { // Case 4: node has right and left childs
 					std::cout << key << ": case 4" << std::endl;
 					pointer successor = minimum(node->right);
@@ -313,7 +319,7 @@ namespace ft {
 						root = successor;
 				}
 				_alloc.destroy(node);
-				_alloc.deallocate(node, 1);
+				_alloc.deallocate(node, sizeof(value_type));
 				return 1;
 			}
 

@@ -7,6 +7,8 @@
 #include "tree.hpp"
 #include "tree_iterator.hpp"
 
+#include "utils.hpp"
+
 namespace ft {
 
 	template <class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator <ft::pair <const Key, T> > > // std::pair a faire
@@ -36,27 +38,25 @@ namespace ft {
 
 
 
-			typedef std::size_t																								size_type;
-			typedef std::ptrdiff_t																							difference_type;
-			typedef	Compare																									key_compare;
-			typedef Compa<Compare>																							value_compare;
-			typedef Alloc																									allocator_type;
-			typedef value_type&																								reference;
-			typedef const value_type&																						const_reference;
-			typedef typename Alloc::pointer																					pointer;
-			typedef typename Alloc::const_pointer																			const_pointer;
-			typedef map_iterator<pointer, typename RBtree<value_type, key_compare, value_compare>::iterator >				iterator;		
-			typedef map_iterator<const_pointer, typename RBtree<value_type, key_compare, value_compare>::const_iterator>	const_iterator;
+			typedef 			std::size_t																								size_type;
+			typedef 			std::ptrdiff_t																							difference_type;
+			typedef				Compare																									key_compare;
+			typedef 			Compa<Compare>																							value_compare;
+			typedef 			Alloc																									allocator_type;
+			typedef 			value_type&																								reference;
+			typedef const 		value_type&																								const_reference;
+			typedef typename 	Alloc::pointer																							pointer;
+			typedef typename 	Alloc::const_pointer																					const_pointer;
+			typedef 			map_iterator<pointer, typename RBtree<value_type, key_compare, value_compare>::iterator >				iterator;		
+			typedef 			map_iterator<const_pointer, typename RBtree<value_type, key_compare, value_compare>::const_iterator>	const_iterator;
 
 
 			// typedef ft::reverse_iterator<iterator>			reverse_iterator;
 			// typedef ft::reverse_iterator<const_iterator>	const_reverse_iterator;
 
-	/* 	private: */
-
-			// pointer			c; // gang ... noeud
-
 			RBtree<value_type, key_compare, value_compare>					_tree;
+	 	private:
+		 
 			allocator_type													_alloc;
 			size_type														_size;
 			key_compare														_compare;
@@ -71,7 +71,9 @@ namespace ft {
 
 			// }
 
-			~map() {} // destroy/deallocate
+			~map() { // destroy/deallocate
+				clear();
+			}
 
 			// map&	operator=(const map& x)
 			// {
@@ -135,8 +137,15 @@ namespace ft {
 			void erase (iterator first, iterator last) {
 				while (first != last) {
 					_size -= _tree.erase(first.current.current->data.first);
+					ft::printTree(_tree.root, nullptr, false);
 					first++;
 				}
+			}
+
+			void swap (map& x);
+
+			void clear() {
+				erase(begin(), end());
 			}
 			
 
