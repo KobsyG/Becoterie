@@ -73,6 +73,9 @@ namespace ft {
 
 			~map() { // destroy/deallocate
 				clear();
+				_tree._alloc.destroy(_tree.senti);
+				_tree._alloc.deallocate(_tree.senti, sizeof(_tree.senti));
+				std::cout << "size after clear: " << _size << std::endl;
 			}
 
 			// map&	operator=(const map& x)
@@ -145,7 +148,8 @@ namespace ft {
 			void swap (map& x);
 
 			void clear() {
-				erase(begin(), end());
+				for (iterator it = begin(); it != end(); it = begin())
+					_size -= _tree.erase(it.current.current->data.first);
 			}
 			
 

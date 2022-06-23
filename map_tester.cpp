@@ -37,7 +37,7 @@ int	main()
 
 	
 
-	ft::printTree(test._tree.root, nullptr, false);
+	//ft::printTree(test._tree.root, nullptr, false);
 
 
 	ft::map<std::string, int>::iterator test1;
@@ -67,43 +67,47 @@ int	main()
 	std::cout << cend->first << std::endl;
 
 
-	ft::printTree(test._tree.root, nullptr, false);
+	//ft::printTree(test._tree.root, nullptr, false);
 	
-	std::cout << "erase c" << std::endl;
+	// std::cout << "erase c" << std::endl;
 	test.erase("c");
-	ft::printTree(test._tree.root, nullptr, false);
+	// //ft::printTree(test._tree.root, nullptr, false);
 	
-	std::cout << "erase s" << std::endl;
+	// std::cout << "erase s" << std::endl;
 	test.erase("s");
-	ft::printTree(test._tree.root, nullptr, false);
+	// //ft::printTree(test._tree.root, nullptr, false);
 
-	std::cout << "erase f" << std::endl;
+	// std::cout << "erase f" << std::endl;
 	test.erase("f");
-	ft::printTree(test._tree.root, nullptr, false);
+	// //ft::printTree(test._tree.root, nullptr, false);
 	
-	std::cout << "erase b" << std::endl;
+	//std::cout << "erase b" << std::endl;
 	std::cout << test.erase("b") << std::endl;
-
-	std::cout << "erase g" << std::endl;
+	
+	// ft::printTree(test._tree.root, nullptr, false);
+	// std::cout << "erase g" << std::endl;
 	std::cout << test.erase("g") << std::endl;
-	ft::printTree(test._tree.root, nullptr, false);
+	// //ft::printTree(test._tree.root, nullptr, false);
+	// ft::printTree(test._tree.root, nullptr, false);
 
-	std::cout << "erase m" << std::endl;
+	// std::cout << "erase m" << std::endl;
 	std::cout << test.erase("m") << std::endl;
-	ft::printTree(test._tree.root, nullptr, false);
+	// //ft::printTree(test._tree.root, nullptr, false);
 
-	std::cout << "erase n" << std::endl;
+	// std::cout << "erase n" << std::endl;
 	std::cout << test.erase("n") << std::endl;
-	ft::printTree(test._tree.root, nullptr, false);
+	// //ft::printTree(test._tree.root, nullptr, false);
 
-	std::cout << "erase p" << std::endl;
+	// std::cout << "erase p" << std::endl;
 	std::cout << test.erase("p") << std::endl;
-	ft::printTree(test._tree.root, nullptr, false);
+	//ft::printTree(test._tree.root, nullptr, false);
 
 	std::cout << "erase d" << std::endl;
 	std::cout << test.erase("d") << std::endl;
-	ft::printTree(test._tree.root, nullptr, false);
+	//ft::printTree(test._tree.root, nullptr, false);
 
 	test.erase(test.begin());
-	ft::printTree(test._tree.root, nullptr, false);
+	//ft::printTree(test._tree.root, nullptr, false);
+
+	std::cout << test.size() << std::endl;
 }

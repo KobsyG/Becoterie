@@ -92,15 +92,16 @@ namespace ft {
 
 			
 
+			allocator_type		_alloc;
 		
 		private:
 			key_compare			_key_comp;
 			value_compare		_val_comp;
-			Alloc				_alloc;
 
 			pointer		make_node(const value_type& data)
 			{
 				pointer	tmp = _alloc.allocate(1);
+				std::cout << "alloc " << tmp << std::endl;
 				_alloc.construct(tmp, data);
 				return tmp;
 			}
@@ -108,9 +109,12 @@ namespace ft {
 		public:
 		
 			pointer 					root;
-			ft::node_senti<value_type>	*senti;
+			pointer						senti;
 
-			RBtree() : root(NULL) { senti = new node_senti<value_type>(); }
+			RBtree() : root(NULL) {
+				senti = _alloc.allocate(1);
+				_alloc.construct(senti, value_type());
+			}
 
 
 
@@ -275,7 +279,6 @@ namespace ft {
 				} else if (node->right && !node->left) { // Case 2: node only has right child
 					std::cout << key << ": case 2" << std::endl;
 					node->right->parent = node->parent;
-					std::cout << node->right->parent->data.first << "->parent = " << node->parent->data.first << std::endl; 
 					if (node->parent->right && node->parent->right == node) {
 						node->parent->right = node->right;
 					}
@@ -303,6 +306,12 @@ namespace ft {
 					else if (successor->parent->right && successor->parent->right == successor)
 						successor->parent->right = NULL;
 
+					//if successor has a right child
+					if (successor->right) {
+						successor->right->parent = successor->parent;
+						successor->parent->left = successor->right;
+					}
+
 					successor->parent = node->parent;
 					if (node->parent->right && node->parent->right == node)
 						node->parent->right = successor;
@@ -319,7 +328,9 @@ namespace ft {
 						root = successor;
 				}
 				_alloc.destroy(node);
+				std::cout << "dealloc " << node << std::endl;
 				_alloc.deallocate(node, sizeof(value_type));
+				std::cout << node << std::endl;
 				return 1;
 			}
 
@@ -401,12 +412,7 @@ namespace ft {
 
 			iterator	end()
 			{
-				
 				return iterator(senti);
-				
-				// iterator it(last());
-				// ++it;
-				// return (it)
 			}
 
 			//find/erase========================================================================================
