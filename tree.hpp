@@ -273,10 +273,13 @@ namespace ft {
 				} else if (node->right && !node->left) { // Case 2: node only has right child
 					std::cout << key << ": case 2" << std::endl;
 					node->right->parent = node->parent;
-					if (node->parent->right && node->parent->right == node)
+					std::cout << node->right->parent->data.first << "->parent = " << node->parent->data.first << std::endl; 
+					if (node->parent->right && node->parent->right == node) {
 						node->parent->right = node->right;
-					else if (node->parent->left && node->parent->left == node)
+					}
+					else if (node->parent->left && node->parent->left == node) {
 						node->parent->left = node->right;
+					}
 				} else if (!node->right && node->left) { // Case 3: node only has left child
 					std::cout << key << ": case 3" << std::endl;
 					node->left->parent = node->parent;
@@ -287,32 +290,28 @@ namespace ft {
 				} else { // Case 4: node has right and left childs
 					std::cout << key << ": case 4" << std::endl;
 					pointer successor = minimum(node->right);
-					std::cout << "successor: " << successor->data.first << std::endl;
-					if (successor != node->right) {
-						std::cout << successor->data.first << "->right = " << node->right->data.first << std::endl;
-						successor->right = node->right;
-					}
-					if (successor != node->left) {
+					pointer tmp = node->right;
 
-						/* std::cout << successor->parent->left->data.first << "!=" << node->left->data.first << std::endl;
+					if (successor->parent->left && successor->parent->left == successor)
 						successor->parent->left = NULL;
-						std::cout << node->left << std::endl;
-						std::cout << successor->parent << std::endl; */
+					else if (successor->parent->right && successor->parent->right == successor)
+						successor->parent->right = NULL;
 
-						std::cout << successor->data.first << "->left = " << node->left->data.first << std::endl;
-						successor->left = node->left;
+					successor->parent = node->parent;
+					if (node->parent->right && node->parent->right == node)
+						node->parent->right = successor;
+					else if (node->parent->left && node->parent->left == node)
+						node->parent->left = successor;
+					if (successor != tmp) {
+						successor->right = tmp;
+						tmp->parent = successor;
 					}
-					node->right->parent = successor;
-					std::cout << node->right->data.first << "->parent = " << successor->data.first << std::endl;
+					successor->left = node->left;
 					node->left->parent = successor;
-					std::cout << node->left->data.first << "->parent = " << successor->data.first << std::endl;
-					if (node == root) {
-						successor->parent = static_cast<ft::node<value_type>* >(senti);
+
+					if (root == node)
 						root = successor;
-					}
-					std::cout << "root = " << root->data.first << std::endl;
 				}
-				std::cout << "ici c bon" << std::endl;
 				_alloc.destroy(node);
 				_alloc.deallocate(node, 1);
 				return 1;

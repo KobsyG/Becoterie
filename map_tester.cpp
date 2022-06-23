@@ -66,25 +66,22 @@ int	main()
 	ft::map<std::string, int>::const_iterator cend = test.begin();
 	std::cout << cend->first << std::endl;
 
-	
 
-	std::cout << "erase m" << std::endl;
-	test.erase("m");
 	ft::printTree(test._tree.root, nullptr, false);
 	
 	std::cout << "erase c" << std::endl;
 	test.erase("c");
 	ft::printTree(test._tree.root, nullptr, false);
 	
-
 	std::cout << "erase s" << std::endl;
 	test.erase("s");
 	ft::printTree(test._tree.root, nullptr, false);
 
-	/*std::cout << "erase f" << std::endl;
+	std::cout << "erase f" << std::endl;
 	test.erase("f");
 	ft::printTree(test._tree.root, nullptr, false);
-	 std::cout << "erase b" << std::endl;
+	
+	std::cout << "erase b" << std::endl;
 	std::cout << test.erase("b") << std::endl;
 
 	std::cout << "erase g" << std::endl;
@@ -105,5 +102,8 @@ int	main()
 
 	std::cout << "erase d" << std::endl;
 	std::cout << test.erase("d") << std::endl;
-	ft::printTree(test._tree.root, nullptr, false); */
+	ft::printTree(test._tree.root, nullptr, false);
+
+	test.erase(test.begin());
+	ft::printTree(test._tree.root, nullptr, false);
 }

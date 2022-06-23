@@ -121,11 +121,22 @@ namespace ft {
 				return ret;
 			}
 
+			void erase (iterator position) {
+				_size -= _tree.erase(position.current.current->data.first);
+			}
+
 			size_type erase (const key_type& k) {
 				if (find(k) == end())
 					return 0;
 				_size--;
 				return _tree.erase(k);
+			}
+
+			void erase (iterator first, iterator last) {
+				while (first != last) {
+					_size -= _tree.erase(first.current.current->data.first);
+					first++;
+				}
 			}
 			
 
