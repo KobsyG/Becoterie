@@ -65,23 +65,31 @@ namespace ft {
 
 			explicit map(const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _alloc(alloc), _size(0), _compare(comp) {}
 
-			// template <class InputIt>
-			// map(InputIt first, InputIt last, const Compare& comp = Compare(), const Allocator& alloc = Allocator()) // gang ... enableif ?
-			// {
+			template <class InputIt>
+			map(InputIt first, InputIt last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) // gang ... enableif ?
+			{
+				insert(first, last);
+			}
 
-			// }
+			map (const map& x) {
+				for (iterator it = x.begin(); it != x.end(); it = x.begin())
+					insert(it.current.current->data);
+				_alloc = allocator_type();
+				_compare = key_compare();
+			}
 
-			~map() { // destroy/deallocate
+			~map() {
 				clear();
 				_tree._alloc.destroy(_tree.senti);
 				_tree._alloc.deallocate(_tree.senti, sizeof(_tree.senti));
 				std::cout << "size after clear: " << _size << std::endl;
 			}
 
-			// map&	operator=(const map& x)
-			// {
-
-			// }
+			map&	operator=(const map& x)
+			{
+				clear();
+				insert(x.begin(), x.end());
+			}
 
 			//Iterators=======================================================================================================
 
@@ -111,20 +119,24 @@ namespace ft {
 				return ret;
 			}
 
-			void insert (iterator position, const value_type& value)
+			iterator insert (iterator position, const value_type& value)
 			{
 				ft::pair<iterator, bool>	ret;
+				iterator it = find(value.first);
 
-				if (find(value.first) != end()) {
-					ret.first = iterator(_tree.find(value.first));
-					ret.second = false;
-					return ret;
-				}
+				if (it != end())
+					return it;
 				_size++;
-				ret.first = iterator(_tree.insert(position.current, value));
-				ret.second = true;
-				return ret;
+				return iterator(_tree.insert(position.current, value));
 			}
+
+			template <class InputIterator>
+  			void insert (InputIterator first, InputIterator last) {
+				while (first != last) {
+	  				insert(*first);
+	  				++first;
+				}
+  			}
 
 			void erase (iterator position) {
 				_size -= _tree.erase(position.current.current->data.first);
@@ -145,7 +157,11 @@ namespace ft {
 				}
 			}
 
-			void swap (map& x);
+			void swap (map& x) {
+				std::swap(_tree, x._tree);
+				std::swap(_size, x._size);
+				std::swap(_compare, x._compare);
+			}
 
 			void clear() {
 				for (iterator it = begin(); it != end(); it = begin())
@@ -157,7 +173,16 @@ namespace ft {
 
 			bool		empty() const{ return _size == 0; }
 			size_type	size() const { return _size; }
-			size_type	max_size() const { return _alloc.max_size(); }	
+			size_type	max_size() const { return _alloc.max_size(); }
+
+			//Element access=======================================================================================================
+
+			mapped_type& operator[] (const key_type& k) {
+				iterator it = find(k);
+				if (it == end())
+					it = insert(value_type(k, mapped_type())).first;
+				return it.current.current->data.second;
+			}
 
 			//Observers=======================================================================================================
 
@@ -212,4 +237,9 @@ namespace ft {
 
 			allocator_type get_allocator() const { return _alloc; }
 	};
+
+	template< class Key, class T, class Compare, class Alloc >
+	void swap( ft::map<Key,T,Compare,Alloc>& lhs, ft::map<Key,T,Compare,Alloc>& rhs ) {
+		lhs.swap(rhs);
+	}
 }
