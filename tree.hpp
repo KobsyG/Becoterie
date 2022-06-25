@@ -782,74 +782,30 @@ namespace ft {
 
 			iterator	lower_bound(const key_type& k) //fonctionne en theorie mais a tester plus en details
 			{
-				node<value_type>	*tmp = root;
-				while (tmp != NULL)
-				{
-					if (tmp->data.first == k)
-						return iterator(tmp);
-					else if (tmp->parent != senti && _key_comp(k, tmp->parent->data.first) && !_key_comp(k, tmp->data.first))
-						return iterator(tmp->next());
-					if (_key_comp(k, tmp->data.first))
-						tmp = tmp->left;
-					else
-						tmp = tmp->right;
-				}
-				return iterator(root);
+				iterator it = begin();
+				for (; it != end() && _key_comp(it->first, k); ++it);
+				return it;
 			}
 
 			const_iterator	lower_bound(const key_type& k) const
 			{
-				node<value_type>	*tmp = root;
-				while (tmp != NULL)
-				{
-					if (tmp->data.first == k)
-						return const_iterator(tmp);
-					else if (tmp->parent != senti && _key_comp(k, tmp->parent->data.first) && !_key_comp(k, tmp->data.first))
-						return const_iterator(tmp);
-					if (_key_comp(k, tmp->data.first))
-						tmp = tmp->left;
-					else
-						tmp = tmp->right;
-				}
-				return const_iterator(tmp);
+				const_iterator it = begin();
+				for (; it != end() && _key_comp(it->first, k); ++it);
+				return it;
 			}
 
 			iterator	upper_bound(const key_type& k)
 			{
-				node<value_type>	*tmp = root;
-				while (tmp != NULL)
-				{
-					//if (tmp->parent != senti)
-					//std::cout << k << " " << tmp->parent->data.first << " " << tmp->data.first << " " << !_key_comp(k, tmp->parent->data.first) << " " <<  _key_comp(k, tmp->data.first) << std::endl;
-					if (tmp->data.first == k)
-						return iterator(tmp->next());
-					else if (tmp->parent != senti && _key_comp(k, tmp->parent->data.first) && !_key_comp(k, tmp->data.first)){
-						//std::cout << k << " " << tmp->parent->data.first << " " << tmp->data.first << std::endl;
-						return iterator(tmp->next());
-					}
-					if (_key_comp(k, tmp->data.first))
-						tmp = tmp->left;
-					else
-						tmp = tmp->right;
-				}
-				return end();
+				iterator it = begin();
+				for (; it != end() && !_key_comp(k, it->first); it++);
+				return it;
 			}
 
 			const_iterator	upper_bound(const key_type& k) const
 			{
-				node<value_type>	*tmp = root;
-				while (tmp != NULL)
-				{
-					if (tmp->data.first == k)
-						return const_iterator(tmp->next());
-					else if (tmp->parent != NULL && _key_comp(k, tmp->parent->data.first) && !_key_comp(k, tmp->data.first))
-						return const_iterator(tmp->next());
-					if (_key_comp(k, tmp->data.first))
-						tmp = tmp->left;
-					else
-						tmp = tmp->right;
-				}
-				return const_iterator(root);
+				const_iterator it = begin();
+				for (; it != end() && !_key_comp(k, it->first); it++);
+				return it;
 			}
 
 			pair<iterator, iterator>	equal_range(const key_type& k)

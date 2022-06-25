@@ -145,7 +145,6 @@ namespace ft {
 			void erase (iterator first, iterator last) {
 				while (first != last) {
 					_size -= _tree.erase(first.current->data.first);
-					ft::printTree(_tree.root, nullptr, false);
 					first++;
 				}
 			}
@@ -159,8 +158,6 @@ namespace ft {
 			void clear() {
 				_tree.clear();
 				_size = 0;
-				/* for (iterator it = begin(); it != end(); it = begin())
-					_size -= _tree.erase(it.current->data.first); */
 			}
 			
 
