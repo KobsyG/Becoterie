@@ -1,7 +1,6 @@
 #pragma once
 
 #include "pair.hpp"
-#include "tree_iterator.hpp"
 
 #define BLACK	0
 #define RED		1
@@ -9,32 +8,15 @@
 namespace ft {
 
 	template <class value_type>
-	struct node;
-
-	template <class value_type>
-	struct node_senti
-	{
-		public:
-		
-			struct node<value_type> *left;
-			struct node<value_type> *right;
-			struct node<value_type>	*parent;
-			int						color;
-
-		public:
-
-			node_senti() : left(NULL), right(NULL), parent(NULL), color(1) {}
-
-	};
-
-	template <class value_type>
-	struct node	: public node_senti<value_type>
+	struct node
 	{
 		value_type	data;
+		struct node<value_type> *left;
+		struct node<value_type> *right;
+		struct node<value_type>	*parent;
+		int						color;
 
-		node() : node_senti<value_type>() {}
-
-		node(const value_type & data) : node_senti<value_type>(), data(data) {}
+		node(const value_type & data) : data(data), color(1), left(NULL), right(NULL), parent(NULL) {}
 
 		node(const node& other) { *this = other; }
 
@@ -77,6 +59,288 @@ namespace ft {
 		}
 	};
 
+	template< class _Pair >
+	class	tree_iterator
+	{
+		public:
+
+
+			typedef 		_Pair 									value_type;
+			typedef 		_Pair&									reference;
+			typedef 		_Pair*									pointer;
+
+			typedef typename std::ptrdiff_t 						difference_type;
+
+			typedef tree_iterator<_Pair>	 						_Self;
+			typedef ft::node<_Pair>* 								_Node_ptr;
+
+
+			_Node_ptr		current;
+			_Node_ptr		senti;
+
+			// Constructeur=======================================================================================
+
+			tree_iterator() : current(), senti() {}
+
+			tree_iterator(_Node_ptr gang)
+			{
+				/* if (gang == NULL)
+				{
+					tree_iterator();
+					return;
+				} */
+				senti = gang;
+				while (senti->parent)
+					senti = senti->parent;
+				current = gang;
+			}
+
+
+			pointer base() const { return current; }
+
+			// Operateur=========================================================================================
+
+			tree_iterator&	operator=(const _Self& other)
+			{
+				current = other.current;
+				senti = other.senti;
+				return (*this);
+			}
+
+			// Operateur de comparaison==========================================================================
+
+			bool	operator==(const tree_iterator & other) const { return (this->current == other.current); }
+
+			bool	operator!=(const tree_iterator & other) const { return (this->current != other.current); }
+
+			bool	operator<(const tree_iterator & other) const
+			{
+				if ( this->current < other.current)
+					return true;
+				return false;
+			}
+
+			bool	operator>(const tree_iterator & other) const
+			{
+				if ( this->current > other.current)
+					return true;
+				return false;
+			}
+
+			bool	operator<=(const tree_iterator & other) const
+			{
+				if ( this->current <= other.current)
+					return true;
+				return false;
+			}
+
+			bool	operator>=(const tree_iterator & other) const
+			{
+				if ( this->current >= other.current)
+					return true;
+				return false;
+			}
+
+			// Operateur de dereferencement====================================================================
+
+			reference	operator*() const { return current->data; }
+
+			pointer		operator->() const { return &current->data; }
+
+			// Operateur d'incrementation=====================================================================
+
+			tree_iterator&	operator++()
+			{
+				if (current != senti)
+					current = current->next();
+				if (current == NULL)
+					current = senti;
+				return *this;
+			}
+
+			tree_iterator	operator++(int)
+			{
+				tree_iterator	tmp = *this;
+				++*this;
+				return (tmp);
+			}
+
+			// // Operateur de decrementation=====================================================================
+
+			tree_iterator&	operator--()
+			{
+				if (current == senti)
+					current = last();
+				else
+					current = current->previous();
+				return *this;
+			}
+			
+			tree_iterator	operator--(int)
+			{
+				tree_iterator	tmp = *this;
+				--*this;
+				return tmp;
+			}
+
+			_Node_ptr	last()
+			{
+				_Node_ptr tmp = senti->left;
+				while (tmp && tmp->right)
+					tmp = tmp->right;
+				return tmp;			
+			}
+	};
+
+	template< class _Pair >
+	class	const_tree_iterator
+	{
+		public:
+
+
+			typedef 		_Pair 									value_type;
+			typedef 		const _Pair&							reference;
+			typedef 		const _Pair*							pointer;
+
+			typedef 		tree_iterator<_Pair> 					iterator;
+			typedef typename std::ptrdiff_t 						difference_type;
+
+			typedef 		const_tree_iterator<_Pair>	 			_Self;
+			typedef 		const ft::node<_Pair>* 					_Node_ptr;
+
+
+			_Node_ptr		current;
+			_Node_ptr		senti;
+
+			// Constructeur=======================================================================================
+
+			const_tree_iterator() : current(), senti() {}
+
+			const_tree_iterator(_Node_ptr gang)
+			{
+			/* 	if (gang == NULL)
+				{
+					const_tree_iterator();
+					return;
+				} */
+				senti = gang;
+				while (senti->parent)
+					senti = senti->parent;
+				current = gang;
+			}
+
+			const_tree_iterator(const iterator other) { current = other.current; senti = other.senti; }
+
+			pointer base() const { return current; }
+
+			// Operateur=========================================================================================
+
+			const_tree_iterator&	operator=(const const_tree_iterator& other)
+			{
+				current = other.current;
+				senti = other.senti;
+				return (*this);
+			}
+
+			// Operateur de comparaison==========================================================================
+
+			bool	operator==(const const_tree_iterator & other) const { return (this->current == other.current); }
+
+			bool	operator!=(const const_tree_iterator & other) const { return (this->current != other.current); }
+
+			bool	operator<(const const_tree_iterator & other) const
+			{
+				if ( this->current < other.current)
+					return true;
+				return false;
+			}
+
+			bool	operator>(const const_tree_iterator & other) const
+			{
+				if ( this->current > other.current)
+					return true;
+				return false;
+			}
+
+			bool	operator<=(const const_tree_iterator & other) const
+			{
+				if ( this->current <= other.current)
+					return true;
+				return false;
+			}
+
+			bool	operator>=(const const_tree_iterator & other) const
+			{
+				if ( this->current >= other.current)
+					return true;
+				return false;
+			}
+
+			// Operateur de dereferencement====================================================================
+
+			reference	operator*() const { return current->data; }
+
+			pointer		operator->() const { return &current->data; }
+
+			// Operateur d'incrementation=====================================================================
+
+			const_tree_iterator& operator++() {
+				if (current != senti) {
+					if (current->right != NULL) {
+						current = current->right;
+						while (current->left != NULL) {
+							current = current->left;
+						}
+					}
+					else {
+						_Node_ptr _y = current->parent;
+						while (_y != NULL && current == _y->right) {
+							current = _y;
+							_y = _y->parent;
+						}
+						current = _y;
+					}
+				}
+				if (current == NULL) {
+					current = senti;
+				}
+				return *this;
+			}
+
+			const_tree_iterator	operator++(int)
+			{
+				const_tree_iterator	tmp = *this;
+				++*this;
+				return (tmp);
+			}
+
+			// // Operateur de decrementation=====================================================================
+
+			const_tree_iterator&	operator--()
+			{
+				if (current == senti)
+					current = last();
+				else
+					current = current->previous();
+				return *this;
+			}
+			
+			const_tree_iterator	operator--(int)
+			{
+				const_tree_iterator	tmp = *this;
+				--*this;
+				return tmp;
+			}
+
+			_Node_ptr	last()
+			{
+				_Node_ptr tmp = senti->left;
+				while (tmp && tmp->right)
+					tmp = tmp->right;
+				return tmp;			
+			}
+	};
+
 	template <class value_type, class key_compare, class value_compare, class Alloc = std::allocator<ft::node<value_type> > >
 	class RBtree
 	{
@@ -87,8 +351,8 @@ namespace ft {
 			typedef typename allocator_type::pointer									pointer;
 			typedef typename allocator_type::const_pointer								const_pointer;
 
-			typedef tree_iterator<pointer, node_senti<value_type>* >					iterator;
-			typedef tree_iterator<const_pointer, node_senti<value_type>* >				const_iterator;
+			typedef tree_iterator<value_type>											iterator;
+			typedef const_tree_iterator<value_type>										const_iterator;
 
 			
 
@@ -101,9 +365,41 @@ namespace ft {
 			pointer		make_node(const value_type& data)
 			{
 				pointer	tmp = _alloc.allocate(1);
-				std::cout << "alloc " << tmp << std::endl;
 				_alloc.construct(tmp, data);
 				return tmp;
+			}
+
+			void _delete_node(pointer x) {
+				if (x != NULL) {
+					_alloc.destroy(x);
+					_alloc.deallocate(x, 1);
+					x = NULL;
+				}
+			}
+
+			void _delete_tree(pointer x) {
+				if (x != NULL) {
+					_delete_tree(x->left);
+					_delete_tree(x->right);
+					_delete_node(x);
+					senti->left = senti;
+				}
+			}
+
+			pointer _copy_tree(pointer x) {
+				if (x == NULL) 
+					return NULL;
+				pointer y = make_node(x->data);
+				y->color = x->color;
+				y->left = _copy_tree(x->left);
+				if (y->left != NULL) {
+					y->left->parent = y;
+				}
+				y->right = _copy_tree(x->right);
+				if (y->right != NULL) {
+					y->right->parent = y;
+				}
+				return y;
 			}
 		
 		public:
@@ -114,9 +410,19 @@ namespace ft {
 			RBtree() : root(NULL) {
 				senti = _alloc.allocate(1);
 				_alloc.construct(senti, value_type());
+				senti->parent = NULL;
 			}
 
-
+			RBtree(const RBtree& other) : root(NULL) {
+				root = _copy_tree(other.root);
+ 				_val_comp = other._val_comp;
+				_key_comp = other._key_comp;
+				senti = _alloc.allocate(1);
+				_alloc.construct(senti, value_type());
+				root->parent = senti;
+				if (root != NULL)
+					senti->left = root;
+			}
 
 			//insert==========================================================================================
 
@@ -148,7 +454,7 @@ namespace ft {
 					y->right = tmp;
 				fix_insert(tmp);
 				senti->left = root;
-				root->parent = static_cast<node<value_type>* >(senti);
+				root->parent = senti;
 				return iterator(tmp);
 			}
 
@@ -187,7 +493,7 @@ namespace ft {
 					y->right = tmp;
 				fix_insert(tmp);
 				senti->left = root;
-				root->parent = static_cast<ft::node<value_type>* >(senti);
+				root->parent = senti;
 				return iterator(tmp);
 			}
 
@@ -269,7 +575,7 @@ namespace ft {
 				if (!node) return 0;
 
 				if (!node->right && !node->left) { // Case 1: leaf
-					std::cout << key << ": case 1" << std::endl;
+					// std::cout << key << ": case 1" << std::endl;
 					if (node->parent && node->parent->left && node->parent->left == node)
 						node->parent->left = NULL;
 					else if (node->parent && node->parent->right && node->parent->right == node)
@@ -277,7 +583,7 @@ namespace ft {
 					if (node == root)
 						root = NULL;
 				} else if (node->right && !node->left) { // Case 2: node only has right child
-					std::cout << key << ": case 2" << std::endl;
+					// std::cout << key << ": case 2" << std::endl;
 					node->right->parent = node->parent;
 					if (node->parent->right && node->parent->right == node) {
 						node->parent->right = node->right;
@@ -288,7 +594,7 @@ namespace ft {
 					if (node == root)
 						root = node->right;
 				} else if (!node->right && node->left) { // Case 3: node only has left child
-					std::cout << key << ": case 3" << std::endl;
+					// std::cout << key << ": case 3" << std::endl;
 					node->left->parent = node->parent;
 					if (node->parent->right && node->parent->right == node)
 						node->parent->right = node->left;
@@ -297,7 +603,7 @@ namespace ft {
 					if (node == root)
 						root = node->left;
 				} else { // Case 4: node has right and left childs
-					std::cout << key << ": case 4" << std::endl;
+					// std::cout << key << ": case 4" << std::endl;
 					pointer successor = minimum(node->right);
 					pointer tmp = node->right;
 
@@ -328,9 +634,7 @@ namespace ft {
 						root = successor;
 				}
 				_alloc.destroy(node);
-				std::cout << "dealloc " << node << std::endl;
 				_alloc.deallocate(node, sizeof(value_type));
-				std::cout << node << std::endl;
 				return 1;
 			}
 
@@ -389,17 +693,19 @@ namespace ft {
 
 			//first/last/iterators===========================================================================
 
-			node<value_type>	*first()
+			pointer				first()
 			{
-				node<value_type>	*tmp = root;
+				pointer				tmp = root;
+				if (tmp == NULL) // if empty, return end
+					return senti;
 				while (tmp && tmp->left)
 					tmp = tmp->left;
 				return tmp;
 			}
 
-			node<value_type>	*last()
+			pointer				last()
 			{
-				node<value_type>	*tmp = root;
+				pointer				tmp = root;
 				while(tmp && tmp->right)
 					tmp = tmp->right;
 				return tmp;
@@ -410,9 +716,19 @@ namespace ft {
 				return (iterator(first()));
 			}
 
+			const_iterator	begin() const
+			{
+				return (const_iterator(first()));
+			}
+
 			iterator	end()
 			{
 				return iterator(senti);
+			}
+
+			const_iterator	end() const
+			{
+				return const_iterator(senti);
 			}
 
 			//find/erase========================================================================================
@@ -516,7 +832,6 @@ namespace ft {
 					else
 						tmp = tmp->right;
 				}
-				std::cout << "alo" << std::endl;
 				return end();
 			}
 
@@ -540,6 +855,12 @@ namespace ft {
 			pair<iterator, iterator>	equal_range(const key_type& k)
 			{
 				return ft::make_pair(lower_bound(k), upper_bound(k));
+			}
+
+
+			void clear() {
+				_delete_tree(root);
+				root = NULL;
 			}
 	};
 	

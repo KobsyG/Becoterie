@@ -35,12 +35,15 @@ int	main()
 	test.end();
 	test.find("a");
 
-	
+	ft::map<std::string, int>	test11(test);
+	ft::map<std::string, int>	test22(test11.begin(), test11.end());
+
+	ft::printTree(test22._tree.root, nullptr, false);
 
 	//ft::printTree(test._tree.root, nullptr, false);
 
 
-	ft::map<std::string, int>::iterator test1;
+	/* ft::map<std::string, int>::iterator test1;
 	ft::map<std::string, int>::iterator test2;
 
 	test1 = test.find("r");
@@ -52,7 +55,7 @@ int	main()
 	std::cout << test1->first << std::endl;
 	std::cout << (test2 == test.end()) << std::endl;
 
-	std::cout << (--test2)->first << std::endl;
+	std::cout << (--test2).current->data.first << std::endl;
 
 
 	ft::map<std::string, int>::iterator	yes = test.end();
@@ -64,7 +67,7 @@ int	main()
 	std::cout << yes->first << std::endl;
 
 	ft::map<std::string, int>::const_iterator cend = test.begin();
-	std::cout << cend->first << std::endl;
+	std::cout << cend.current->data.first << std::endl;
 
 
 	//ft::printTree(test._tree.root, nullptr, false);
@@ -107,7 +110,8 @@ int	main()
 	//ft::printTree(test._tree.root, nullptr, false);
 
 	test.erase(test.begin());
+	
 	//ft::printTree(test._tree.root, nullptr, false);
 
-	std::cout << test.size() << std::endl;
+	std::cout << test.size() << std::endl; */
 }

@@ -3,9 +3,7 @@
 #include <functional>
 #include "pair.hpp"
 #include <iostream>
-#include "map_iterator.hpp"
 #include "tree.hpp"
-#include "tree_iterator.hpp"
 
 #include "utils.hpp"
 
@@ -47,8 +45,8 @@ namespace ft {
 			typedef const 		value_type&																								const_reference;
 			typedef typename 	Alloc::pointer																							pointer;
 			typedef typename 	Alloc::const_pointer																					const_pointer;
-			typedef 			map_iterator<pointer, typename RBtree<value_type, key_compare, value_compare>::iterator >				iterator;		
-			typedef 			map_iterator<const_pointer, typename RBtree<value_type, key_compare, value_compare>::const_iterator>	const_iterator;
+			typedef typename 	RBtree<value_type, key_compare, value_compare>::iterator												iterator;		
+			typedef typename 	RBtree<value_type, key_compare, value_compare>::const_iterator											const_iterator;
 
 
 			// typedef ft::reverse_iterator<iterator>			reverse_iterator;
@@ -71,18 +69,13 @@ namespace ft {
 				insert(first, last);
 			}
 
-			map (const map& x) {
-				for (iterator it = x.begin(); it != x.end(); it = x.begin())
-					insert(it.current.current->data);
-				_alloc = allocator_type();
-				_compare = key_compare();
+			map (const map& x) : _alloc(x._alloc), _compare(key_compare()), _tree(x._tree) {
 			}
 
 			~map() {
 				clear();
 				_tree._alloc.destroy(_tree.senti);
 				_tree._alloc.deallocate(_tree.senti, sizeof(_tree.senti));
-				std::cout << "size after clear: " << _size << std::endl;
 			}
 
 			map&	operator=(const map& x)
@@ -93,13 +86,13 @@ namespace ft {
 
 			//Iterators=======================================================================================================
 
-			iterator		begin() { return iterator(_tree.begin()); }
+			iterator		begin() { return _tree.begin(); }
 
-			const_iterator	begin() const { return const_iterator(_tree.begin()); }
+			const_iterator	begin() const { return _tree.begin(); }
 
-			iterator	end() { return iterator(_tree.end()); }
+			iterator	end() { return _tree.end(); }
 
-			iterator	end() const { return const_iterator(_tree.end()); }
+			iterator	end() const { return _tree.end(); }
 
 		
 			//Modifiers=======================================================================================================
@@ -109,12 +102,12 @@ namespace ft {
 				ft::pair<iterator, bool>	ret;
 
 				if (find(value.first) != end()) {
-					ret.first = iterator(_tree.find(value.first));
+					ret.first = _tree.find(value.first);
 					ret.second = false;
 					return ret;
 				}
 				_size++;
-				ret.first = iterator(_tree.insert(value));
+				ret.first = _tree.insert(value);
 				ret.second = true;
 				return ret;
 			}
@@ -127,7 +120,7 @@ namespace ft {
 				if (it != end())
 					return it;
 				_size++;
-				return iterator(_tree.insert(position.current, value));
+				return _tree.insert(position.current, value);
 			}
 
 			template <class InputIterator>
@@ -139,7 +132,7 @@ namespace ft {
   			}
 
 			void erase (iterator position) {
-				_size -= _tree.erase(position.current.current->data.first);
+				_size -= _tree.erase(position.current->data.first);
 			}
 
 			size_type erase (const key_type& k) {
@@ -151,7 +144,7 @@ namespace ft {
 
 			void erase (iterator first, iterator last) {
 				while (first != last) {
-					_size -= _tree.erase(first.current.current->data.first);
+					_size -= _tree.erase(first.current->data.first);
 					ft::printTree(_tree.root, nullptr, false);
 					first++;
 				}
@@ -164,8 +157,10 @@ namespace ft {
 			}
 
 			void clear() {
-				for (iterator it = begin(); it != end(); it = begin())
-					_size -= _tree.erase(it.current.current->data.first);
+				_tree.clear();
+				_size = 0;
+				/* for (iterator it = begin(); it != end(); it = begin())
+					_size -= _tree.erase(it.current->data.first); */
 			}
 			
 
@@ -181,7 +176,7 @@ namespace ft {
 				iterator it = find(k);
 				if (it == end())
 					it = insert(value_type(k, mapped_type())).first;
-				return it.current.current->data.second;
+				return it.current->data.second;
 			}
 
 			//Observers=======================================================================================================
@@ -193,12 +188,12 @@ namespace ft {
 
 			iterator find(const key_type& k)
 			{
-				return iterator(_tree.find(k));
+				return _tree.find(k);
 			}
 
 			const_iterator find(const key_type& k) const
 			{
-				return const_iterator(_tree.find(k));
+				return _tree.find(k);
 			}
 
 			size_type count (const key_type& k) const
@@ -210,22 +205,22 @@ namespace ft {
 
 			iterator lower_bound (const key_type& k)
 			{
-				return iterator(_tree.lower_bound(k));
+				return _tree.lower_bound(k);
 			}
 
 			const_iterator lower_bound (const key_type& k) const
 			{
-				return const_iterator(_tree.lower_bound(k));
+				return _tree.lower_bound(k);
 			}
 
 			iterator upper_bound (const key_type& k)
 			{
-				return iterator(_tree.upper_bound(k));
+				return _tree.upper_bound(k);
 			}
 
 			const_iterator upper_bound (const key_type& k) const
 			{
-				return const_iterator(_tree.upper_bound(k));
+				return _tree.upper_bound(k);
 			}
 
 			ft::pair<iterator, iterator> equal_range (const key_type& k)
