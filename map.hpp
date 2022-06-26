@@ -4,6 +4,7 @@
 #include "pair.hpp"
 #include <iostream>
 #include "tree.hpp"
+#include "../iterator.hpp"
 
 #include "utils.hpp"
 
@@ -47,10 +48,9 @@ namespace ft {
 			typedef typename 	Alloc::const_pointer																					const_pointer;
 			typedef typename 	RBtree<value_type, key_compare, value_compare>::iterator												iterator;		
 			typedef typename 	RBtree<value_type, key_compare, value_compare>::const_iterator											const_iterator;
+			typedef typename 	ft::reverse_iterator<iterator> 																			reverse_iterator;
+			typedef typename 	ft::reverse_iterator<const_iterator> 																	const_reverse_iterator;
 
-
-			// typedef ft::reverse_iterator<iterator>			reverse_iterator;
-			// typedef ft::reverse_iterator<const_iterator>	const_reverse_iterator;
 
 			RBtree<value_type, key_compare, value_compare>					_tree;
 	 	private:
@@ -93,6 +93,15 @@ namespace ft {
 			iterator	end() { return _tree.end(); }
 
 			iterator	end() const { return _tree.end(); }
+
+			reverse_iterator rbegin() {
+				return reverse_iterator(end());
+			}
+
+			reverse_iterator rend() {
+				return reverse_iterator(begin());
+			}
+
 
 		
 			//Modifiers=======================================================================================================
