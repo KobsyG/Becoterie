@@ -818,6 +818,8 @@ namespace ft {
 				_delete_tree(root);
 				root = NULL;
 			}
+
+			size_t	max_size() const { return _alloc.max_size(); }
 	};
 	
 }

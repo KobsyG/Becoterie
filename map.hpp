@@ -165,7 +165,7 @@ namespace ft {
 
 			bool		empty() const{ return _size == 0; }
 			size_type	size() const { return _size; }
-			size_type	max_size() const { return _alloc.max_size(); }
+			size_type	max_size() const { return _tree.max_size(); }
 
 			//Element access=======================================================================================================
 
