@@ -1,6 +1,7 @@
 #pragma once
 
 #include "pair.hpp"
+#include "../utils.hpp"
 
 #define BLACK	0
 #define RED		1
@@ -70,6 +71,7 @@ namespace ft {
 			typedef 		_Pair*									pointer;
 
 			typedef typename std::ptrdiff_t 						difference_type;
+			typedef std::bidirectional_iterator_tag					category;
 
 			typedef tree_iterator<_Pair>	 						_Self;
 			typedef ft::node<_Pair>* 								_Node_ptr;
@@ -204,6 +206,7 @@ namespace ft {
 
 			typedef 		tree_iterator<_Pair> 					iterator;
 			typedef typename std::ptrdiff_t 						difference_type;
+			typedef std::bidirectional_iterator_tag					category;
 
 			typedef 		const_tree_iterator<_Pair>	 			_Self;
 			typedef 		const ft::node<_Pair>* 					_Node_ptr;
@@ -316,13 +319,37 @@ namespace ft {
 
 			// // Operateur de decrementation=====================================================================
 
+			_Node_ptr maximum(_Node_ptr node) {
+				while (node->right != NULL)
+					node = node->right;
+				return node;
+			}
+
 			const_tree_iterator&	operator--()
 			{
-				if (current == senti)
+				if (current == senti) {
+					current = maximum(senti->left);
+				}
+				else if (current->left != NULL) {
+					current = current->left;
+					while (current->right != NULL) {
+						current = current->right;
+					}
+				}
+				else {
+					_Node_ptr _y = current->parent;
+					while (_y != NULL && current == _y->left) {
+						current = _y;
+						_y = _y->parent;
+					}
+					current = _y;
+				}
+				return *this;
+				/* if (current == senti)
 					current = last();
 				else
 					current = current->previous();
-				return *this;
+				return *this; */
 			}
 			
 			const_tree_iterator	operator--(int)
@@ -401,6 +428,22 @@ namespace ft {
 				}
 				return y;
 			}
+
+			friend bool operator==(const RBtree& _l, const RBtree& _r) {
+				return ft::equal(_l.begin(), _l.end(), _r.begin(), _r.end());
+			}
+
+			friend bool operator<(const RBtree& _l, const RBtree& _r) {
+				return ft::lexicographical_compare(_l.begin(), _l.end(), _r.begin(), _r.end());
+			}
+
+			friend bool operator!=(const RBtree& _l, const RBtree& _r) { return !(_l == _r); }
+
+			friend bool operator>(const RBtree& _l, const RBtree& _r) { return _r < _l; }
+
+			friend bool operator<=(const RBtree& _l, const RBtree& _r) { return !(_r < _l); }
+
+			friend bool operator>=(const RBtree& _l, const RBtree& _r) { return !(_l < _r); }
 		
 		public:
 		
@@ -693,7 +736,7 @@ namespace ft {
 
 			//first/last/iterators===========================================================================
 
-			pointer				first()
+			pointer				first() const
 			{
 				pointer				tmp = root;
 				if (tmp == NULL) // if empty, return end
@@ -730,6 +773,7 @@ namespace ft {
 			{
 				return const_iterator(senti);
 			}
+
 
 			//find/erase========================================================================================
 

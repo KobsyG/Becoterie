@@ -38,9 +38,16 @@ int	main()
 	ft::map<std::string, int>	test11(test);
 	ft::map<std::string, int>	test22(test11.begin(), test11.end());
 
-	ft::printTree(test22._tree.root, nullptr, false);
 
-	//ft::printTree(test._tree.root, nullptr, false);
+	ft::map<std::string, int>::iterator test1 = test11.insert(test11.begin(), ft::make_pair("0", 0));
+	std::cout << test1->first << std::endl;
+
+/* 	ft::printTree(test11._tree.root, nullptr, false);
+	test1 = test11.insert(test11.end(), ft::make_pair("6", 4));
+
+	std::cout << test1.current->parent->data.first << std::endl;
+
+	ft::printTree(test11._tree.root, nullptr, false); */
 
 
 	/* ft::map<std::string, int>::iterator test1;
