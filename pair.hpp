@@ -19,12 +19,12 @@ struct  pair
 
 		pair() : first(first_type()), second(second_type()) {}
 
-		pair(const T1& x, const T2& y) { first = x; second = y; }
+		pair(const T1& x, const T2& y) : first(x), second(y) {}
 
 		template <class U1, class U2>
 		pair(const pair <U1, U2>& p) : first(p.first), second(p.second) {}
 
-		pair&	operator=(pair& pr) { first = pr.first; second = pr.second; return *this; }
+		pair&	operator=(const pair& pr) { first = pr.first; second = pr.second; return *this; }
 
 };
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "pair.hpp"
+#include "../utils.hpp"
 
 #define BLACK	0
 #define RED		1
@@ -401,6 +402,22 @@ namespace ft {
 				}
 				return y;
 			}
+
+			friend bool operator==(const RBtree& _l, const RBtree& _r) {
+				return ft::equal(_l.begin(), _l.end(), _r.begin(), _r.end());
+			}
+
+			friend bool operator<(const RBtree& _l, const RBtree& _r) {
+				return ft::lexicographical_compare(_l.begin(), _l.end(), _r.begin(), _r.end());
+			}
+
+			friend bool operator!=(const RBtree& _l, const RBtree& _r) { return !(_l == _r); }
+
+			friend bool operator>(const RBtree& _l, const RBtree& _r) { return _r < _l; }
+
+			friend bool operator<=(const RBtree& _l, const RBtree& _r) { return !(_r < _l); }
+
+			friend bool operator>=(const RBtree& _l, const RBtree& _r) { return !(_l < _r); }
 		
 		public:
 		
@@ -693,7 +710,7 @@ namespace ft {
 
 			//first/last/iterators===========================================================================
 
-			pointer				first()
+			pointer				first() const
 			{
 				pointer				tmp = root;
 				if (tmp == NULL) // if empty, return end
