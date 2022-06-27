@@ -99,28 +99,39 @@ namespace ft {
 
 			ft::pair<iterator, bool>	insert (const value_type& value)
 			{
-				ft::pair<iterator, bool>	ret;
+				const ft::pair<iterator, bool>	ret = _tree.insert(value);
 
-				if (find(value.first) != end()) {
-					ret.first = _tree.find(value.first);
-					ret.second = false;
-					return ret;
-				}
-				_size++;
-				ret.first = _tree.insert(value);
-				ret.second = true;
+				if (ret.second)
+					_size++;
 				return ret;
 			}
 
 			iterator insert (iterator position, const value_type& value)
 			{
-				ft::pair<iterator, bool>	ret;
-				iterator it = find(value.first);
-
-				if (it != end())
-					return it;
-				_size++;
-				return _tree.insert(position.current, value);
+				if (begin() == end())
+					return(insert(value).first);
+				else if (position == end())
+					position--;
+				ft::pair<iterator, bool> ret;
+				iterator tmp = position;
+				if (_compare(value.first, position->first)) {
+					tmp--;
+					while (tmp.current && _compare(value.first, tmp->first)) {
+						tmp--;
+						position--;
+					}
+				}
+				else {
+					tmp++;
+					while (tmp != end() && !_compare(value.first, tmp->first)) {
+						tmp++;
+						position++;
+					}
+				}
+				ret = _tree.insert(value, position.current);
+				if (ret.second)
+					_size++;
+				return ret;
 			}
 
 			template <class InputIterator>
@@ -144,8 +155,12 @@ namespace ft {
 
 			void erase (iterator first, iterator last) {
 				while (first != last) {
+					iterator next = first;
+					next++;
+					std::cerr << first->first << std::endl;
 					_size -= _tree.erase(first.current->data.first);
-					first++;
+					first = next;
+					ft:printTree(_tree.root, 0, 0);
 				}
 			}
 

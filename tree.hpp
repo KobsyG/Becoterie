@@ -426,15 +426,23 @@ namespace ft {
 
 			//insert==========================================================================================
 
-			iterator	insert(const value_type& value) // changer return ici 
+			ft::pair<iterator, bool>	insert(const value_type& value) // changer return ici 
 			{
-				pointer	tmp = root;
+				return (insert(value, root));
+			}
+
+			ft::pair<iterator, bool>	insert(const value_type& value, pointer start)
+			{
+				pointer	tmp = start;
 				pointer y = NULL;
 
 				if (root)
 					root->parent = NULL;
 				while (tmp != NULL)
 				{
+					if (!_val_comp(tmp->data, value) && !_val_comp(value, tmp->data)) {
+						return (ft::make_pair(iterator(tmp), false));
+					}
 					y = tmp;
 					if (_val_comp(value, tmp->data))
 						tmp = tmp->left;
@@ -452,50 +460,51 @@ namespace ft {
 					y->left = tmp;
 				else
 					y->right = tmp;
-				fix_insert(tmp);
+				if (tmp->parent->parent)
+					fix_insert(tmp);
 				senti->left = root;
 				root->parent = senti;
-				return iterator(tmp);
+				return make_pair(iterator(tmp), true);
 			}
 
-			iterator insert(iterator position, const value_type& val) {
-				pointer node = position.current;
-				pointer tmp = node;
+			// iterator insert(iterator position, const value_type& val) {
+			// 	pointer node = position.current;
+			// 	pointer tmp = node;
 
-				// Check si il est a un endroit valide, sinon on appelle le insert normal à la place
-				if (tmp->parent && tmp->parent->right)
-					if (tmp->parent->right == tmp && _val_comp(val, tmp->data)) // Si il est a droite mais qu'il est plus petit
-						return insert(val);
+			// 	// Check si il est a un endroit valide, sinon on appelle le insert normal à la place
+			// 	if (tmp->parent && tmp->parent->right)
+			// 		if (tmp->parent->right == tmp && _val_comp(val, tmp->data)) // Si il est a droite mais qu'il est plus petit
+			// 			return insert(val);
 		
-				if (tmp->parent && tmp->parent->left)
-					if (tmp->parent->left == tmp && _val_comp(tmp->data, val)) // Si il est a gauche mais qu'il est plus grand
-						return insert(val);
+			// 	if (tmp->parent && tmp->parent->left)
+			// 		if (tmp->parent->left == tmp && _val_comp(tmp->data, val)) // Si il est a gauche mais qu'il est plus grand
+			// 			return insert(val);
 
-				pointer y = NULL;
-				while (tmp != NULL)
-				{
-					y = tmp;
-					if (_val_comp(val, tmp->data))
-						tmp = tmp->left;
-					else
-						tmp = tmp->right;
-				}
-				tmp = make_node(val);
-				tmp->parent = y;
-				if (y == NULL)
-				{
-					root = tmp;
-					root->color = BLACK;
-				}
-				else if (_val_comp(val, y->data))
-					y->left = tmp;
-				else
-					y->right = tmp;
-				fix_insert(tmp);
-				senti->left = root;
-				root->parent = senti;
-				return iterator(tmp);
-			}
+			// 	pointer y = NULL;
+			// 	while (tmp != NULL)
+			// 	{
+			// 		y = tmp;
+			// 		if (_val_comp(val, tmp->data))
+			// 			tmp = tmp->left;
+			// 		else
+			// 			tmp = tmp->right;
+			// 	}
+			// 	tmp = make_node(val);
+			// 	tmp->parent = y;
+			// 	if (y == NULL)
+			// 	{
+			// 		root = tmp;
+			// 		root->color = BLACK;
+			// 	}
+			// 	else if (_val_comp(val, y->data))
+			// 		y->left = tmp;
+			// 	else
+			// 		y->right = tmp;
+			// 	fix_insert(tmp);
+			// 	senti->left = root;
+			// 	root->parent = senti;
+			// 	return iterator(tmp);
+			// }
 
 			void	fix_insert(node<value_type>* node)
 			{
@@ -607,31 +616,54 @@ namespace ft {
 					pointer successor = minimum(node->right);
 					pointer tmp = node->right;
 
-					if (successor->parent->left && successor->parent->left == successor)
-						successor->parent->left = NULL;
-					else if (successor->parent->right && successor->parent->right == successor)
-						successor->parent->right = NULL;
+					// if right subtree doesnt have left branch
+					if (tmp->left == NULL) {
+						tmp->left = node->left;
+						node->left->parent = tmp;
+						tmp->parent = node->parent;
+						if (node->parent == senti) {
+							root = tmp;
+							senti->left = root;
+						}
+						else {
+							if (node->parent->left == node)
+								node->parent->left = tmp;
+							else
+								node->parent->right = tmp;
+						}
+					} else {
 
-					//if successor has a right child
-					if (successor->right) {
-						successor->right->parent = successor->parent;
-						successor->parent->left = successor->right;
+						if (successor->parent->left && successor->parent->left == successor)
+							successor->parent->left = NULL;
+						else if (successor->parent->right && successor->parent->right == successor)
+							successor->parent->right = NULL;
+
+						//if successor has a right child
+						if (successor->right) {
+							if (successor == node->right) {
+								successor->right->parent = successor->parent;
+								successor->parent->left = successor->right;
+							} else {
+								successor->right->parent = successor->parent;
+								successor->parent->left = successor->right;
+							}
+						}
+
+						successor->parent = node->parent;
+						if (node->parent->right && node->parent->right == node)
+							node->parent->right = successor;
+						else if (node->parent->left && node->parent->left == node)
+							node->parent->left = successor;
+						if (successor != tmp) {
+							successor->right = tmp;
+							tmp->parent = successor;
+						}
+						successor->left = node->left;
+						node->left->parent = successor;
+						
+						if (root == node)
+							root = successor;
 					}
-
-					successor->parent = node->parent;
-					if (node->parent->right && node->parent->right == node)
-						node->parent->right = successor;
-					else if (node->parent->left && node->parent->left == node)
-						node->parent->left = successor;
-					if (successor != tmp) {
-						successor->right = tmp;
-						tmp->parent = successor;
-					}
-					successor->left = node->left;
-					node->left->parent = successor;
-
-					if (root == node)
-						root = successor;
 				}
 				_alloc.destroy(node);
 				_alloc.deallocate(node, sizeof(value_type));

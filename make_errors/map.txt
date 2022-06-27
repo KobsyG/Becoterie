@@ -1,0 +1,38 @@
+In file included from map_tester.cpp:12:
+In file included from ./map.hpp:6:
+./tree.hpp:553:30: error: unused parameter 'node' [-Werror,-Wunused-parameter]
+                        void delete_fixup(pointer node) {
+                                                  ^
+In file included from map_tester.cpp:12:
+./map.hpp:67:56: error: unused parameter 'comp' [-Werror,-Wunused-parameter]
+                        map(InputIt first, InputIt last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) // gang ... enableif ?
+                                                                            ^
+./map.hpp:67:100: error: unused parameter 'alloc' [-Werror,-Wunused-parameter]
+                        map(InputIt first, InputIt last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) // gang ... enableif ?
+                                                                                                                        ^
+In file included from map_tester.cpp:12:
+In file included from ./map.hpp:6:
+./tree.hpp:19:47: error: field 'color' will be initialized after field 'left' [-Werror,-Wreorder]
+                node(const value_type & data) : data(data), color(1), left(NULL), right(NULL), parent(NULL) {}
+                                                            ^
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/memory:1849:31: note: in instantiation of member function 'ft::node<ft::pair<const std::__1::basic_string<char>, int> >::node' requested here
+            ::new((void*)__p) _Tp(__a0);
+                              ^
+./tree.hpp:412:12: note: in instantiation of function template specialization 'std::__1::allocator<ft::node<ft::pair<const std::__1::basic_string<char>, int> > >::construct<ft::pair<const std::__1::basic_string<char>, int> >' requested here
+                                _alloc.construct(senti, value_type());
+                                       ^
+./map.hpp:64:13: note: in instantiation of member function 'ft::RBtree<ft::pair<const std::__1::basic_string<char>, int>, std::__1::less<std::__1::basic_string<char> >, ft::map<std::__1::basic_string<char>, int, std::__1::less<std::__1::basic_string<char> >, std::__1::allocator<ft::pair<const std::__1::basic_string<char>, int> > >::Compa<std::__1::less<std::__1::basic_string<char> > >, std::__1::allocator<ft::node<ft::pair<const std::__1::basic_string<char>, int> > > >::RBtree' requested here
+                        explicit map(const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _alloc(alloc), _size(0), _compare(comp) {}
+                                 ^
+map_tester.cpp:17:28: note: in instantiation of member function 'ft::map<std::__1::basic_string<char>, int, std::__1::less<std::__1::basic_string<char> >, std::__1::allocator<ft::pair<const std::__1::basic_string<char>, int> > >::map' requested here
+        ft::map<std::string, int>       test;
+                                        ^
+In file included from map_tester.cpp:12:
+./map.hpp:72:43: error: field '_compare' will be initialized after field '_tree' [-Werror,-Wreorder]
+                        map (const map& x) : _alloc(x._alloc), _compare(key_compare()), _tree(x._tree) {
+                                                               ^
+map_tester.cpp:38:28: note: in instantiation of member function 'ft::map<std::__1::basic_string<char>, int, std::__1::less<std::__1::basic_string<char> >, std::__1::allocator<ft::pair<const std::__1::basic_string<char>, int> > >::map' requested here
+        ft::map<std::string, int>       test11(test);
+                                        ^
+5 errors generated.
+make: *** [map] Error 1
