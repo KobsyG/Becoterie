@@ -140,7 +140,7 @@ namespace ft {
 				ret = _tree.insert(value, position.current);
 				if (ret.second)
 					_size++;
-				return ret;
+				return ret.first;
 			}
 
 			template <class InputIterator>

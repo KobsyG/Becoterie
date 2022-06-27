@@ -503,11 +503,14 @@ namespace ft {
 					y->left = tmp;
 				else
 					y->right = tmp;
-				if (tmp->parent->parent)
+				if (tmp->parent && tmp->parent->parent)
 					fix_insert(tmp);
 				senti->left = root;
 				root->parent = senti;
-				return make_pair(iterator(tmp), true);
+				ft::pair<iterator, bool> ret;
+				ret.first = iterator(tmp);
+				ret.second = true;
+				return ret;
 			}
 
 			// iterator insert(iterator position, const value_type& val) {
