@@ -71,7 +71,7 @@ namespace ft {
 			typedef 		_Pair*									pointer;
 
 			typedef typename std::ptrdiff_t 						difference_type;
-			typedef std::bidirectional_iterator_tag					category;
+			typedef std::bidirectional_iterator_tag					iterator_category;
 
 			typedef tree_iterator<_Pair>	 						_Self;
 			typedef ft::node<_Pair>* 								_Node_ptr;
@@ -206,7 +206,7 @@ namespace ft {
 
 			typedef 		tree_iterator<_Pair> 					iterator;
 			typedef typename std::ptrdiff_t 						difference_type;
-			typedef std::bidirectional_iterator_tag					category;
+			typedef std::bidirectional_iterator_tag					iterator_category;
 
 			typedef 		const_tree_iterator<_Pair>	 			_Self;
 			typedef 		const ft::node<_Pair>* 					_Node_ptr;
@@ -384,7 +384,17 @@ namespace ft {
 			
 
 			allocator_type		_alloc;
-		
+
+
+			RBtree& operator=(RBtree &ref) {
+					if (*this != ref) {
+						_delete_tree(senti->left);
+						senti->left = _copy_tree(ref.senti->left);
+						senti->left->parent = senti;
+					}
+					return *this;
+			}
+
 		private:
 			key_compare			_key_comp;
 			value_compare		_val_comp;
@@ -429,8 +439,10 @@ namespace ft {
 				return y;
 			}
 
+			
+
 			friend bool operator==(const RBtree& _l, const RBtree& _r) {
-				return ft::equal(_l.begin(), _l.end(), _r.begin(), _r.end());
+				return ft::equal(_l.begin(), _l.end(), _r.begin()); // TODO: check size !!
 			}
 
 			friend bool operator<(const RBtree& _l, const RBtree& _r) {
@@ -462,9 +474,10 @@ namespace ft {
 				_key_comp = other._key_comp;
 				senti = _alloc.allocate(1);
 				_alloc.construct(senti, value_type());
-				root->parent = senti;
-				if (root != NULL)
+				if (root != NULL) {
 					senti->left = root;
+					root->parent = senti;
+				}
 			}
 
 			//insert==========================================================================================
@@ -861,30 +874,108 @@ namespace ft {
 
 			iterator	lower_bound(const key_type& k) //fonctionne en theorie mais a tester plus en details
 			{
-				iterator it = begin();
-				for (; it != end() && _key_comp(it->first, k); ++it);
-				return it;
+				pointer node = root;
+				pointer previous = NULL;
+
+				if (root == NULL)
+					return(end());
+
+				while (node != NULL) {
+					previous = node;
+					if (!_key_comp(node->data.first, k) && !_key_comp(k, node->data.first)) {
+						return iterator(node);
+					}
+					else if (_key_comp(k, node->data.first)) {
+						node = node->left;
+					}
+					else {
+						node = node->right;
+					}
+				}
+				if (previous && !_key_comp(previous->data.first, k))
+					return iterator(previous);
+				iterator it = iterator(previous);
+				return ++it;
 			}
 
 			const_iterator	lower_bound(const key_type& k) const
 			{
-				const_iterator it = begin();
-				for (; it != end() && _key_comp(it->first, k); ++it);
-				return it;
+				pointer node = root;
+				pointer previous = NULL;
+
+				if (root == NULL)
+					return(end());
+
+				while (node != NULL) {
+					previous = node;
+					if (!_key_comp(node->data.first, k) && !_key_comp(k, node->data.first)) {
+						return const_iterator(node);
+					}
+					else if (_key_comp(k, node->data.first)) {
+						node = node->left;
+					}
+					else {
+						node = node->right;
+					}
+				}
+				if (previous && !_key_comp(previous->data.first, k))
+					return const_iterator(previous);
+				const_iterator it = const_iterator(previous);
+				return ++it;
 			}
 
 			iterator	upper_bound(const key_type& k)
 			{
-				iterator it = begin();
-				for (; it != end() && !_key_comp(k, it->first); it++);
-				return it;
+				pointer node = root;
+				pointer previous = NULL;
+
+				if (root == NULL)
+					return(end());
+
+				while (node != NULL) {
+					previous = node;
+					if (!_key_comp(node->data.first, k) && !_key_comp(k, node->data.first)) {
+						iterator ret = iterator(node);
+						return ++ret;
+					}
+					else if (_key_comp(k, node->data.first)) {
+						node = node->left;
+					}
+					else {
+						node = node->right;
+					}
+				}
+				if (previous && !_key_comp(previous->data.first, k))
+					return iterator(previous);
+				iterator it = iterator(previous);
+				return ++it;
 			}
 
 			const_iterator	upper_bound(const key_type& k) const
 			{
-				const_iterator it = begin();
-				for (; it != end() && !_key_comp(k, it->first); it++);
-				return it;
+				pointer node = root;
+				pointer previous = NULL;
+
+				if (root == NULL)
+					return(end());
+
+				while (node != NULL) {
+					previous = node;
+					if (!_key_comp(node->data.first, k) && !_key_comp(k, node->data.first)) {
+						const_iterator ret = const_iterator(node);
+						return ++ret;
+					}
+					else if (_key_comp(k, node->data.first)) {
+						node = node->left;
+					}
+					else {
+						node = node->right;
+					}
+				}
+				if (previous && !_key_comp(previous->data.first, k))
+					return const_iterator(previous);
+				const_iterator it = const_iterator(previous);
+				return ++it;
 			}
 
 			pair<iterator, iterator>	equal_range(const key_type& k)

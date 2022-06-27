@@ -5,7 +5,6 @@
 #include <iostream>
 #include "tree.hpp"
 #include "../iterator.hpp"
-
 #include "utils.hpp"
 
 namespace ft {
@@ -123,6 +122,9 @@ namespace ft {
 					position--;
 				ft::pair<iterator, bool> ret;
 				iterator tmp = position;
+				iterator same = find(value.first);
+				if (same != end())
+					return (same);
 				if (_compare(value.first, position->first)) {
 					tmp--;
 					while (tmp.current && _compare(value.first, tmp->first)) {
@@ -166,17 +168,16 @@ namespace ft {
 				while (first != last) {
 					iterator next = first;
 					next++;
-					std::cerr << first->first << std::endl;
 					_size -= _tree.erase(first.current->data.first);
 					first = next;
-					ft:printTree(_tree.root, 0, 0);
 				}
 			}
 
 			void swap (map& x) {
-				std::swap(_tree, x._tree);
 				std::swap(_size, x._size);
+				std::swap(_tree, x._tree);
 				std::swap(_compare, x._compare);
+				std::swap(_alloc, x._alloc);
 			}
 
 			void clear() {
@@ -274,7 +275,7 @@ namespace ft {
 	//Comparison operators=================================================================================================
 
 	template<typename _Key, typename _Tp, typename _Compare, typename _Alloc>
-	bool operator==(const map<_Key, _Tp, _Compare, _Alloc>& _l, const map<_Key, _Tp, _Compare, _Alloc>& _r) { return _l.size() == _r.size() && _l._tree == _r._tree; }
+	bool operator==(const map<_Key, _Tp, _Compare, _Alloc>& _l, const map<_Key, _Tp, _Compare, _Alloc>& _r) { return _l._tree == _r._tree; }
 
 	template<typename _Key, typename _Tp, typename _Compare, typename _Alloc>
 	bool operator<(const map<_Key, _Tp, _Compare, _Alloc>& _l, const map<_Key, _Tp, _Compare, _Alloc>& _r) { return _l._tree < _r._tree; }
