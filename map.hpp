@@ -107,6 +107,9 @@ namespace ft {
 
 			ft::pair<iterator, bool>	insert (const value_type& value)
 			{
+				if (find(value.first) != end()) 
+					return ft::make_pair(find(value.first), false);
+					
 				const ft::pair<iterator, bool>	ret = _tree.insert(value);
 
 				if (ret.second)
@@ -175,7 +178,8 @@ namespace ft {
 
 			void swap (map& x) {
 				std::swap(_size, x._size);
-				std::swap(_tree, x._tree);
+				std::swap(_tree.root, x._tree.root);
+				std::swap(_tree.senti, x._tree.senti);
 				std::swap(_compare, x._compare);
 				std::swap(_alloc, x._alloc);
 			}
@@ -275,16 +279,20 @@ namespace ft {
 	//Comparison operators=================================================================================================
 
 	template<typename _Key, typename _Tp, typename _Compare, typename _Alloc>
-	bool operator==(const map<_Key, _Tp, _Compare, _Alloc>& _l, const map<_Key, _Tp, _Compare, _Alloc>& _r) { return _l._tree == _r._tree; }
+	bool operator==(const map<_Key, _Tp, _Compare, _Alloc>& _l, const map<_Key, _Tp, _Compare, _Alloc>& _r) { return _l.size() == _r.size() && _l._tree == _r._tree; }
 
 	template<typename _Key, typename _Tp, typename _Compare, typename _Alloc>
-	bool operator<(const map<_Key, _Tp, _Compare, _Alloc>& _l, const map<_Key, _Tp, _Compare, _Alloc>& _r) { return _l._tree < _r._tree; }
+	bool operator<(const map<_Key, _Tp, _Compare, _Alloc>& _l, const map<_Key, _Tp, _Compare, _Alloc>& _r) {
+		return _l._tree < _r._tree;
+	}
 
 	template<typename _Key, typename _Tp, typename _Compare, typename _Alloc>
 	bool operator!=(const map<_Key, _Tp, _Compare, _Alloc>& _l,const map<_Key, _Tp, _Compare, _Alloc>& _r) { return !(_l == _r); }
 
 	template<typename _Key, typename _Tp, typename _Compare, typename _Alloc>
-	bool operator>(const map<_Key, _Tp, _Compare, _Alloc>& _l, const map<_Key, _Tp, _Compare, _Alloc>& _r) { return _r < _l; }
+	bool operator>(const map<_Key, _Tp, _Compare, _Alloc>& _l, const map<_Key, _Tp, _Compare, _Alloc>& _r) {
+		return _r < _l;
+	}
 
 	template<typename _Key, typename _Tp, typename _Compare, typename _Alloc>
 	bool operator<=(const map<_Key, _Tp, _Compare, _Alloc>& _l, const map<_Key, _Tp, _Compare, _Alloc>& _r) { return !(_r < _l); }

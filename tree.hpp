@@ -451,7 +451,10 @@ namespace ft {
 
 			friend bool operator!=(const RBtree& _l, const RBtree& _r) { return !(_l == _r); }
 
-			friend bool operator>(const RBtree& _l, const RBtree& _r) { return _r < _l; }
+			friend bool operator>(const RBtree& _l, const RBtree& _r) { 
+				std::cout << (_l < _r) << std::endl;
+				return _r < _l;
+			}
 
 			friend bool operator<=(const RBtree& _l, const RBtree& _r) { return !(_r < _l); }
 
